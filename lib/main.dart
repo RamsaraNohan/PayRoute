@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'core/config/mapbox_config.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'core/services/fcm_service.dart' show FCMService, initLocalNotifications;
@@ -13,6 +15,8 @@ import 'dart:async';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  MapboxOptions.setAccessToken(kMapboxPublicToken);
   
   // Initialize local notification display
   await initLocalNotifications();

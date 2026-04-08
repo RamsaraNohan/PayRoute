@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../../core/services/realtime_db_service.dart';
 import '../../core/theme/app_theme.dart';
@@ -14,12 +14,12 @@ class LiveTrackingScreen extends StatefulWidget {
 }
 
 class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
-  final Completer<GoogleMapController> _controller = Completer();
   final RealtimeDBService _dbService = RealtimeDBService();
-  
-  Map<MarkerId, Marker> markers = {};
+
+  MapboxMap? _mapboxMap;
+  CircleAnnotationManager? _circleManager;
+  CircleAnnotation? _busAnnotation;
   StreamSubscription<DatabaseEvent>? _busStream;
-  LatLng? _currentBusPos;
 
   @override
   void initState() {
@@ -29,32 +29,40 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
 
   void _startListeningToBus() {
     _busStream = _dbService.streamBusLocations().listen((event) async {
-      if (event.snapshot.value != null) {
-        final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-        if (data.containsKey(widget.busId)) {
-          final busData = Map<String, dynamic>.from(data[widget.busId]);
-          final double lat = busData['lat'];
-          final double lng = busData['lng'];
-          
-          final pos = LatLng(lat, lng);
-          _currentBusPos = pos;
-          
-          final marker = Marker(
-            markerId: MarkerId(widget.busId),
-            position: pos,
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-            infoWindow: const InfoWindow(title: 'Your Bus'),
-          );
+      if (event.snapshot.value == null) return;
+      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+      if (!data.containsKey(widget.busId)) return;
 
-          setState(() {
-            markers[MarkerId(widget.busId)] = marker;
-          });
+      final busData = Map<String, dynamic>.from(data[widget.busId] as Map);
+      final double lat = (busData['lat'] as num).toDouble();
+      final double lng = (busData['lng'] as num).toDouble();
+      final pos = Point(coordinates: Position(lng, lat));
 
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(CameraUpdate.newLatLng(pos));
-        }
+      if (_circleManager == null) return;
+
+      if (_busAnnotation == null) {
+        _busAnnotation = await _circleManager!.create(CircleAnnotationOptions(
+          geometry: pos,
+          circleRadius: 14.0,
+          circleColor: Colors.blueAccent.value,
+          circleStrokeWidth: 3.0,
+          circleStrokeColor: Colors.white.value,
+        ));
+      } else {
+        _busAnnotation = _busAnnotation!.copyWith(CircleAnnotationOptions(geometry: pos));
+        await _circleManager!.update(_busAnnotation!);
       }
+
+      await _mapboxMap?.flyTo(
+        CameraOptions(center: pos, zoom: 16.0),
+        MapAnimationOptions(duration: 600),
+      );
     });
+  }
+
+  Future<void> _onMapCreated(MapboxMap map) async {
+    _mapboxMap = map;
+    _circleManager = await map.annotations.createCircleAnnotationManager();
   }
 
   @override
@@ -65,23 +73,19 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const kInitialPosition = CameraPosition(
-      target: LatLng(7.0840, 80.0098), // Default Gampaha approx
-      zoom: 14.4746,
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Live Bus Tracking'),
         backgroundColor: AppTheme.backgroundDark,
       ),
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _currentBusPos != null ? CameraPosition(target: _currentBusPos!, zoom: 16) : kInitialPosition,
-        markers: Set<Marker>.of(markers.values),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      body: MapWidget(
+        key: const ValueKey('liveTrackingMap'),
+        onMapCreated: _onMapCreated,
+        cameraOptions: CameraOptions(
+          center: Point(coordinates: Position(80.0098, 7.0840)),
+          zoom: 14.0,
+        ),
+        styleUri: MapboxStyles.DARK,
       ),
     );
   }

@@ -3,7 +3,7 @@ import { auth, db } from "../services/firebaseAdmin";
 import * as crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
-const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "";
+const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "1234614";
 const MERCHANT_SECRET = process.env["PAYHERE_MERCHANT_SECRET"] ?? "";
 const IS_SANDBOX = process.env["PAYHERE_SANDBOX"] !== "false";
 

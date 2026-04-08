@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 
-const String azureBaseUrl = 'https://payroute-functions.azurewebsites.net/api';
+const String azureBaseUrl =
+    'https://payroute-functions-ajcgebh7a2axe3cw.southeastasia-01.azurewebsites.net/api';
 // Set false when Azure deployed
 const bool kUseMockFunctions = false; 
 

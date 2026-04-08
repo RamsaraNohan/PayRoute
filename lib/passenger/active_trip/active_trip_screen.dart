@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cf;
 import '../../core/theme/app_theme.dart';
 import '../complaint/complaint_screen.dart';
@@ -15,11 +15,13 @@ class ActiveTripScreen extends StatefulWidget {
 }
 
 class _ActiveTripScreenState extends State<ActiveTripScreen> {
-  final Completer<GoogleMapController> _mapController = Completer();
+  MapboxMap? _mapboxMap;
+  CircleAnnotationManager? _circleManager;
+  CircleAnnotation? _busAnnotation;
+
   StreamSubscription<cf.DocumentSnapshot>? _busSubscription;
-  final Map<MarkerId, Marker> _markers = {};
-  LatLng? _busPos;
   String _busRegistration = 'Your Bus';
+  Position? _initialPos;
 
   @override
   void initState() {
@@ -37,32 +39,42 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
         .snapshots()
         .listen((snapshot) async {
       if (!snapshot.exists) return;
-      
+
       final data = snapshot.data() as Map<String, dynamic>;
       final geo = data['currentLocation'] as cf.GeoPoint?;
-      _busRegistration = data['registrationNumber'] ?? busId;
+      if (mounted) setState(() => _busRegistration = data['registrationNumber'] ?? busId);
 
       if (geo != null) {
-        final pos = LatLng(geo.latitude, geo.longitude);
-        _busPos = pos;
-        
-        final marker = Marker(
-          markerId: MarkerId(busId),
-          position: pos,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
-          infoWindow: InfoWindow(title: _busRegistration),
-        );
+        final pos = Position(geo.longitude, geo.latitude);
+        _initialPos ??= pos;
+        final point = Point(coordinates: pos);
 
-        if (mounted) {
-          setState(() {
-            _markers[MarkerId(busId)] = marker;
-          });
-          
-          final c = await _mapController.future;
-          c.animateCamera(CameraUpdate.newLatLng(pos));
+        if (_circleManager != null) {
+          if (_busAnnotation == null) {
+            _busAnnotation = await _circleManager!.create(CircleAnnotationOptions(
+              geometry: point,
+              circleRadius: 14.0,
+              circleColor: Colors.purpleAccent.value,
+              circleStrokeWidth: 3.0,
+              circleStrokeColor: Colors.white.value,
+            ));
+          } else {
+            _busAnnotation = _busAnnotation!.copyWith(CircleAnnotationOptions(geometry: point));
+            await _circleManager!.update(_busAnnotation!);
+          }
+
+          await _mapboxMap?.flyTo(
+            CameraOptions(center: point, zoom: 16.0),
+            MapAnimationOptions(duration: 600),
+          );
         }
       }
     });
+  }
+
+  Future<void> _onMapCreated(MapboxMap map) async {
+    _mapboxMap = map;
+    _circleManager = await map.annotations.createCircleAnnotationManager();
   }
 
   @override
@@ -73,6 +85,9 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Default to Colombo if no position yet
+    final center = _initialPos ?? Position(79.8612, 6.9271);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -124,7 +139,7 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
                 ),
               ),
 
-              // Live Google Map
+              // Live Mapbox Map
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.all(24),
@@ -136,17 +151,14 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
                       BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 5)
                     ],
                   ),
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: _busPos ?? const LatLng(6.9271, 79.8612),
-                      zoom: 15,
+                  child: MapWidget(
+                    key: const ValueKey('activeTripMap'),
+                    onMapCreated: _onMapCreated,
+                    cameraOptions: CameraOptions(
+                      center: Point(coordinates: center),
+                      zoom: 15.0,
                     ),
-                    markers: Set<Marker>.of(_markers.values),
-                    onMapCreated: (c) => _mapController.complete(c),
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    mapToolbarEnabled: false,
+                    styleUri: MapboxStyles.DARK,
                   ),
                 ),
               ),
