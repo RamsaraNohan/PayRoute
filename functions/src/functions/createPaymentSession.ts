@@ -7,7 +7,11 @@ const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "";
 const MERCHANT_SECRET = process.env["PAYHERE_MERCHANT_SECRET"] ?? "";
 const IS_SANDBOX = process.env["PAYHERE_SANDBOX"] !== "false";
 
+// Note: MD5 is required by the PayHere payment gateway specification for hash
+// generation and signature verification (https://support.payhere.lk/api-&-mobile-sdk/payhere-checkout).
+// The use of MD5 here is not a security choice — it is a mandatory API contract.
 function buildPayHereHash(orderId: string, amountStr: string, currency: string): string {
+    // nosemgrep: javascript.lang.security.audit.node-md5.node-md5
     const merchantSecretHash = crypto
         .createHash("md5")
         .update(MERCHANT_SECRET)

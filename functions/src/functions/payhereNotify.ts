@@ -5,11 +5,14 @@ import * as crypto from "crypto";
 const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "";
 const MERCHANT_SECRET = process.env["PAYHERE_MERCHANT_SECRET"] ?? "";
 
+// Note: MD5 is required by the PayHere payment gateway specification for HMAC verification
+// (https://support.payhere.lk/api-&-mobile-sdk/payhere-checkout). This is a mandatory API contract.
 function verifyPayHereNotify(params: Record<string, string>): boolean {
     const { merchant_id, order_id, payhere_amount, payhere_currency, status_code, md5sig } = params;
     if (!merchant_id || !order_id || !payhere_amount || !payhere_currency || !status_code || !md5sig) {
         return false;
     }
+    // nosemgrep: javascript.lang.security.audit.node-md5.node-md5
     const secretHash = crypto.createHash("md5").update(MERCHANT_SECRET).digest("hex").toUpperCase();
     const localSig = crypto
         .createHash("md5")
@@ -28,13 +31,11 @@ export async function payhereNotify(
     }
 
     try {
-        // PayHere sends URL-encoded form data
+        // PayHere sends URL-encoded form data — use URLSearchParams for robust parsing
         const bodyText = await request.text();
+        const urlParams = new URLSearchParams(bodyText);
         const params: Record<string, string> = {};
-        for (const part of bodyText.split("&")) {
-            const [k, v] = part.split("=");
-            if (k) params[decodeURIComponent(k)] = decodeURIComponent(v ?? "");
-        }
+        urlParams.forEach((value, key) => { params[key] = value; });
 
         context.log("PayHere notify params:", JSON.stringify(params));
 

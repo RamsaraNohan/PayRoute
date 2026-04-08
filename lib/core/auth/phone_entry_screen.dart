@@ -15,6 +15,8 @@ class PhoneEntryScreen extends ConsumerStatefulWidget {
 }
 
 class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
+  static final _phoneRegex = RegExp(r'^\d{9}$');
+
   final TextEditingController _phoneController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _isLoading = false;
@@ -24,7 +26,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final raw = _phoneController.text.trim();
     // Normalize: strip leading zero to get 9-digit local number
     final local = raw.startsWith('0') ? raw.substring(1) : raw;
-    if (local.length != 9 || !RegExp(r'^\d{9}$').hasMatch(local)) {
+    if (local.length != 9 || !_phoneRegex.hasMatch(local)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a valid 9-digit Sri Lankan mobile number')),
       );

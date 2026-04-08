@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +22,8 @@ Future<void> initLocalNotifications() async {
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
+  StreamSubscription<String>? _tokenRefreshSubscription;
+
   Future<void> init() async {
     NotificationSettings settings = await _messaging.requestPermission();
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -29,14 +32,18 @@ class FCMService {
         await _saveTokenToFirestore(token);
       }
 
-      // Refresh token on rotation
-      _messaging.onTokenRefresh.listen(_saveTokenToFirestore);
+      // Refresh token on rotation — subscription stored for cleanup
+      _tokenRefreshSubscription = _messaging.onTokenRefresh.listen(_saveTokenToFirestore);
 
       // Show a local notification banner when app is in foreground
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         _showLocalNotification(message);
       });
     }
+  }
+
+  void dispose() {
+    _tokenRefreshSubscription?.cancel();
   }
 
   void _showLocalNotification(RemoteMessage message) {
