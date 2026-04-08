@@ -5,20 +5,20 @@ import { UserCheck, Bus, Check, X, Info } from 'lucide-react';
 
 const Approvals = () => {
   const [activeTab, setActiveTab] = useState('staff');
-  const [staff, setStaff] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [conductors, setConductors] = useState([]);
   const [buses, setBuses] = useState([]);
   const [assignments, setAssignments] = useState([]);
+
+  // Combine drivers and conductors for rendering without race conditions
+  const staff = [...drivers, ...conductors];
 
   useEffect(() => {
     // Listen to Pending Drivers
     const driversUnsub = onSnapshot(
       query(collection(db, 'drivers'), where('verificationStatus', '==', 'pending')),
       (snap) => {
-        const drivers = snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'driver', collection: 'drivers' }));
-        setStaff(prev => {
-          const conductors = prev.filter(s => s.collection === 'conductors');
-          return [...drivers, ...conductors];
-        });
+        setDrivers(snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'driver', collection: 'drivers' })));
       }
     );
 
@@ -26,11 +26,7 @@ const Approvals = () => {
     const conductorsUnsub = onSnapshot(
       query(collection(db, 'conductors'), where('verificationStatus', '==', 'pending')),
       (snap) => {
-        const conductors = snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'conductor', collection: 'conductors' }));
-        setStaff(prev => {
-          const drivers = prev.filter(s => s.collection === 'drivers');
-          return [...drivers, ...conductors];
-        });
+        setConductors(snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'conductor', collection: 'conductors' })));
       }
     );
 

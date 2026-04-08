@@ -152,7 +152,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                       setState(() => _isLoading = true);
                       try {
                         await _authService.verifyPhoneNumber(
-                          phoneNumber: '+94${widget.phoneNumber.startsWith('0') ? widget.phoneNumber.substring(1) : widget.phoneNumber}',
+                          phoneNumber: '+94${widget.phoneNumber}',
                           codeSent: (newVerificationId, resendToken) {
                             if (mounted) {
                               setState(() {
