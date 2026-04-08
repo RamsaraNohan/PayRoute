@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "356398123137",
+    "firebase_url": "https://pyaroute-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pyaroute",
+    "storage_bucket": "pyaroute.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356398123137:android:2780146d0c005271d9a580",
+        "android_client_info": {
+          "package_name": "com.payroute.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCy2uyooJJDvobBYSIDvrjTAwOigW8CRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356398123137:android:f7627f265f075e07d9a580",
+        "android_client_info": {
+          "package_name": "com.payroute.assenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCy2uyooJJDvobBYSIDvrjTAwOigW8CRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356398123137:android:158cd9993b8e278ad9a580",
+        "android_client_info": {
+          "package_name": "com.payroute.crew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCy2uyooJJDvobBYSIDvrjTAwOigW8CRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356398123137:android:8819ba2c270d104ed9a580",
+        "android_client_info": {
+          "package_name": "com.payroute.owner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCy2uyooJJDvobBYSIDvrjTAwOigW8CRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
