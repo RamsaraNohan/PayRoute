@@ -17,14 +17,22 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
   bool _isLoading = false;
 
   void _getOTP() async {
-    final phone = _phoneController.text.trim();
-    if (phone.isEmpty) return;
+    final raw = _phoneController.text.trim();
+    // Normalize: strip leading zero to get 9-digit local number
+    final local = raw.startsWith('0') ? raw.substring(1) : raw;
+    if (local.length != 9 || !RegExp(r'^\d{9}$').hasMatch(local)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid 9-digit Sri Lankan mobile number')),
+      );
+      return;
+    }
+    final phone = local; // 9-digit form used in OTPEntryScreen display
 
     setState(() => _isLoading = true);
 
     try {
       await _authService.verifyPhoneNumber(
-        phoneNumber: '+94${phone.startsWith('0') ? phone.substring(1) : phone}',
+        phoneNumber: '+94$phone',
         codeSent: (verificationId, resendToken) {
           ref.read(onboardingStateProvider.notifier).start();
           setState(() => _isLoading = false);

@@ -21,10 +21,12 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
   bool _isLoading = false;
   int _countdown = 60;
   Timer? _timer;
+  late String _verificationId;
 
   @override
   void initState() {
     super.initState();
+    _verificationId = widget.verificationId;
     startTimer();
   }
 
@@ -55,7 +57,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await _authService.signInWithOTP(widget.verificationId, otp);
+      await _authService.signInWithOTP(_verificationId, otp);
 
       ref.read(onboardingStateProvider.notifier).complete();
       setState(() => _isLoading = false);
@@ -67,6 +69,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
       );
     } catch (e) {
       setState(() => _isLoading = false);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid OTP: $e')));
     }
   }
@@ -144,9 +147,40 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
             _countdown > 0
                 ? Text('Resend in 0:${_countdown.toString().padLeft(2, '0')}', style: const TextStyle(color: Colors.white54))
                 : TextButton(
-                    onPressed: () {
+                    onPressed: _isLoading ? null : () async {
                       startTimer();
-                      // Call resend OTP logic here if implemented on backend
+                      setState(() => _isLoading = true);
+                      try {
+                        await _authService.verifyPhoneNumber(
+                          phoneNumber: '+94${widget.phoneNumber.startsWith('0') ? widget.phoneNumber.substring(1) : widget.phoneNumber}',
+                          codeSent: (newVerificationId, resendToken) {
+                            if (mounted) {
+                              setState(() {
+                                _verificationId = newVerificationId;
+                                _isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('OTP resent successfully')),
+                              );
+                            }
+                          },
+                          verificationFailed: (e) {
+                            if (mounted) {
+                              setState(() => _isLoading = false);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Resend failed: ${e.message}')),
+                              );
+                            }
+                          },
+                        );
+                      } catch (e) {
+                        if (mounted) {
+                          setState(() => _isLoading = false);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Resend error: $e')),
+                          );
+                        }
+                      }
                     },
                     child: const Text('Resend OTP', style: TextStyle(color: AppTheme.purpleLight)),
                   )

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../constants/app_constants.dart';
 import '../../models/user_model.dart';
 
@@ -12,7 +13,8 @@ class FirestoreService {
         return UserModel.fromMap(doc.data()!, doc.id);
       }
       return null;
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('[FirestoreService] getUser($uid) failed: $e\n$st');
       return null;
     }
   }

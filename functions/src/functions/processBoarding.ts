@@ -9,10 +9,16 @@ export async function processBoarding(request: HttpRequest, context: InvocationC
 
     try {
         const idToken = authHeader.split('Bearer ')[1];
-        await auth.verifyIdToken(idToken); // Conductor authorization check
+        const decodedToken = await auth.verifyIdToken(idToken);
+        const callerUid = decodedToken.uid;
 
         const body = await request.json() as any;
         const { tokenId, conductorId, busId, boardingLocation } = body;
+
+        // Verify the authenticated user is the conductor making this request
+        if (callerUid !== conductorId) {
+            return { status: 403, jsonBody: { error: 'Forbidden: caller is not the specified conductor' } };
+        }
 
         // Run within a transaction
         const result = await db.runTransaction(async (t) => {
@@ -72,6 +78,7 @@ export async function processBoarding(request: HttpRequest, context: InvocationC
                 status: 'ONGOING',
                 boardingTime: new Date().toISOString(),
                 boardingStopName: boardingStopName,
+                boardingLocation: boardingLocation || null,
                 destinationStopId: tokenData.destinationStopId,
                 companionCount: tokenData.companionCount || 1,
                 fareBase: routeData.baseFareCents || 4500

@@ -9,7 +9,8 @@ export async function signalDrop(request: HttpRequest, context: InvocationContex
 
     try {
         const idToken = authHeader.split('Bearer ')[1];
-        await auth.verifyIdToken(idToken); // Passenger authorization check
+        const decodedToken = await auth.verifyIdToken(idToken);
+        const callerUid = decodedToken.uid;
 
         const body = await request.json() as any;
         const { tripId, dropLocation } = body;
@@ -20,6 +21,12 @@ export async function signalDrop(request: HttpRequest, context: InvocationContex
             
             if (!tripSnap.exists) throw new Error('Trip not found');
             const tripData = tripSnap.data() as any;
+
+            // Verify the authenticated user is the passenger for this trip
+            if (callerUid !== tripData.passengerId) {
+                throw new Error('Forbidden: caller is not the passenger for this trip');
+            }
+
             if (tripData.status !== 'ONGOING') throw new Error('Trip already completed');
 
             // 1. Fetch Route Metadata for Pricing
