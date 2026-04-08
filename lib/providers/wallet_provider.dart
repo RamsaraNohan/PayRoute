@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'passenger_provider.dart';
 import 'auth_provider.dart';
-import '../core/services/firestore_service.dart';
 
 part 'wallet_provider.g.dart';
 

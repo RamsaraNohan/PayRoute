@@ -9,6 +9,8 @@ import '../booking/advance_booking_screen.dart';
 import '../check_in/check_in_screen.dart';
 import '../../providers/active_trip_provider.dart';
 import '../active_trip/active_trip_screen.dart';
+import '../history/trip_history_screen.dart';
+import '../../auth/role_selection_screen.dart';
 
 class PassengerHomeTab extends StatefulWidget {
   const PassengerHomeTab({super.key});
@@ -94,9 +96,8 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                         children: [
                           _buildQuickAction(context, Icons.calendar_month, 'Book Ride',
                               () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdvanceBookingScreen()))),
-                          _buildQuickAction(context, Icons.history, 'My Trips', () {
-                             // Will link to Trip History
-                          }),
+                          _buildQuickAction(context, Icons.history, 'My Trips',
+                              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TripHistoryScreen()))),
                           _buildQuickAction(context, Icons.qr_code_scanner, 'Check In', 
                               () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CheckInScreen()))),
                           _buildQuickAction(context, Icons.account_balance_wallet, 'Wallet',
@@ -109,7 +110,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                           style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 16),
                       
-                      _buildRealRecentTrips(passenger.userId),
+                      _buildRealRecentTrips(passenger.passengerId),
                     ],
                   );
                 },
@@ -167,13 +168,13 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppTheme.purpleLight.withOpacity(0.9), AppTheme.purplePrimary.withOpacity(0.9)],
+              colors: [AppTheme.purpleLight.withValues(alpha: 0.9), AppTheme.purplePrimary.withValues(alpha: 0.9)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
-              BoxShadow(color: AppTheme.purpleLight.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 8)),
+              BoxShadow(color: AppTheme.purpleLight.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 8)),
             ],
           ),
           child: Column(
@@ -186,7 +187,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
                     child: const Text('ON BUS', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
                   ),
                 ],
@@ -254,7 +255,11 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
             const Text('Please complete your passenger registration.', textAlign: TextAlign.center, style: TextStyle(color: Colors.white54)),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () {}, // Redirect to Profile completion
+              onPressed: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const RoleSelectionScreen()),
+                (route) => false,
+              ),
               style: AppTheme.primaryButton(),
               child: const Text('Complete Info')
             )
@@ -264,12 +269,12 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
     );
   }
 
-  Widget _buildRealRecentTrips(String userId) {
+  Widget _buildRealRecentTrips(String passengerId) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('trips')
-          .where('userId', isEqualTo: userId)
-          .orderBy('boardedAt', descending: true)
+          .where('passengerId', isEqualTo: passengerId)
+          .orderBy('boardingTime', descending: true)
           .limit(3)
           .snapshots(),
       builder: (context, snapshot) {
@@ -294,8 +299,11 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
           children: snapshot.data!.docs.map((doc) {
             final data = doc.data() as Map<String, dynamic>;
             final currencyFormat = NumberFormat('#,##0.00', 'en_US');
-            final fareCents = data['fareCents'] as int? ?? 0;
-            final dateStr = DateFormat("MMM d, h:mm a").format((data['boardedAt'] as Timestamp).toDate());
+            final fareCents = (data['fareCents'] as int?) ?? (data['finalFare'] as int?) ?? 0;
+            final rawTime = data['boardingTime'] as String?;
+            final dateStr = rawTime != null
+                ? DateFormat("MMM d, h:mm a").format(DateTime.parse(rawTime))
+                : '—';
             
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
@@ -305,7 +313,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: AppTheme.purpleLight.withOpacity(0.2), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: AppTheme.purpleLight.withValues(alpha: 0.2), shape: BoxShape.circle),
                     child: const Icon(Icons.directions_bus, color: AppTheme.purpleLight),
                   ),
                   const SizedBox(width: 16),
@@ -313,7 +321,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${data['boardingStopName'] ?? 'Start'} → ${data['destinationStopName'] ?? 'End'}', 
+                        Text('${data['boardingStopName'] ?? 'Start'} → ${data['destinationStopName'] ?? data['destinationStopId'] ?? 'End'}', 
                              maxLines: 1, overflow: TextOverflow.ellipsis,
                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
                         const SizedBox(height: 4),

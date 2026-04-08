@@ -47,7 +47,7 @@ class ProfileScreen extends ConsumerWidget {
                         children: [
                           CircleAvatar(
                             radius: 48,
-                            backgroundColor: AppTheme.purpleLight.withOpacity(0.3),
+                            backgroundColor: AppTheme.purpleLight.withValues(alpha: 0.3),
                             backgroundImage: passenger.profilePhotoUrl.isNotEmpty
                                 ? NetworkImage(passenger.profilePhotoUrl)
                                 : null,
@@ -81,9 +81,9 @@ class ProfileScreen extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppTheme.purpleLight.withOpacity(0.2),
+                          color: AppTheme.purpleLight.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppTheme.purpleLight.withOpacity(0.4)),
+                          border: Border.all(color: AppTheme.purpleLight.withValues(alpha: 0.4)),
                         ),
                         child: const Text(
                           'PASSENGER',
@@ -205,7 +205,7 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: color.withOpacity(0.15), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: color.withValues(alpha: 0.15), shape: BoxShape.circle),
               child: Icon(icon, color: color, size: 20),
             ),
             const SizedBox(width: 14),

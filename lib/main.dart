@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'core/services/fcm_service.dart';
@@ -62,6 +61,7 @@ class _PayRouteAppState extends State<PayRouteApp> {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer(
       builder: (context, ref, child) {
         final authState = ref.watch(currentUserStreamProvider);
         final isOnboarding = ref.watch(onboardingStateProvider);

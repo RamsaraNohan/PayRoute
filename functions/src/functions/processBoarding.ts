@@ -40,17 +40,20 @@ export async function processBoarding(request: HttpRequest, context: InvocationC
 
             let boardingStopName = 'Unknown Stop';
             if (boardingLocation && routeData.stops) {
-                // Find nearest stop within 500m
+                // Find nearest stop within 500m using Haversine distance
                 const stops = routeData.stops as any[];
-                let minDistance = 0.5 / 111; // Approx conversion for 500m in degrees for rough check
+                let minDistanceKm = 0.5; // 500m threshold
                 for (const stop of stops) {
-                    const dist = Math.sqrt(
-                        Math.pow(stop.location.latitude - boardingLocation.latitude, 2) + 
-                        Math.pow(stop.location.longitude - boardingLocation.longitude, 2)
-                    );
-                    if (dist < minDistance) {
+                    const lat1 = boardingLocation.latitude * Math.PI / 180;
+                    const lat2 = stop.location.latitude * Math.PI / 180;
+                    const dLat = (stop.location.latitude - boardingLocation.latitude) * Math.PI / 180;
+                    const dLon = (stop.location.longitude - boardingLocation.longitude) * Math.PI / 180;
+                    const a = Math.sin(dLat / 2) ** 2 +
+                              Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+                    const distKm = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    if (distKm < minDistanceKm) {
                         boardingStopName = stop.stopName;
-                        minDistance = dist;
+                        minDistanceKm = distKm;
                     }
                 }
             }

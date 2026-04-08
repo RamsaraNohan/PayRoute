@@ -25,7 +25,7 @@ class VerificationRejectedScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: Colors.redAccent.withOpacity(0.1),
+                    color: Colors.redAccent.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.redAccent, width: 2),
                   ),

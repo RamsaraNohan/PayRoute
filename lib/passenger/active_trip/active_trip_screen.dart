@@ -108,7 +108,7 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: Colors.green.withOpacity(0.1), shape: BoxShape.circle),
+                      decoration: BoxDecoration(color: Colors.green.withValues(alpha: 0.1), shape: BoxShape.circle),
                       child: const Icon(Icons.commute, color: Colors.greenAccent),
                     ),
                     const SizedBox(width: 16),
@@ -132,7 +132,7 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(color: Colors.white10),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20, spreadRadius: 5)
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 5)
                     ],
                   ),
                   child: GoogleMap(

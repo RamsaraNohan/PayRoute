@@ -39,7 +39,7 @@ class TripHistoryScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.directions_bus_outlined, size: 80, color: Colors.white.withOpacity(0.2)),
+                  Icon(Icons.directions_bus_outlined, size: 80, color: Colors.white.withValues(alpha: 0.2)),
                   const SizedBox(height: 16),
                   const Text('No trips yet', style: TextStyle(color: Colors.white54, fontSize: 18)),
                   const SizedBox(height: 8),
@@ -79,7 +79,7 @@ class TripHistoryScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: (isOngoing ? Colors.green : AppTheme.purpleLight).withOpacity(0.2),
+                          color: (isOngoing ? Colors.green : AppTheme.purpleLight).withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -113,7 +113,7 @@ class TripHistoryScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: (isOngoing ? Colors.green : (isCompleted ? Colors.blue : Colors.orange)).withOpacity(0.2),
+                              color: (isOngoing ? Colors.green : (isCompleted ? Colors.blue : Colors.orange)).withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(

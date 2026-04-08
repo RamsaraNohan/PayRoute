@@ -230,7 +230,7 @@ class _ScannerLineAnimationState extends State<_ScannerLineAnimation> with Singl
             height: 2,
             decoration: BoxDecoration(
               boxShadow: [
-                BoxShadow(color: AppTheme.purpleLight.withOpacity(0.5), blurRadius: 10, spreadRadius: 2),
+                BoxShadow(color: AppTheme.purpleLight.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2),
               ],
               color: AppTheme.purpleLight,
             ),

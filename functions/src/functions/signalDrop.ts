@@ -37,10 +37,13 @@ export async function signalDrop(request: HttpRequest, context: InvocationContex
             // Mock distance if GPS is unavailable, otherwise calc delta
             let distanceKm = 1.0; 
             if (dropLocation && tripData.boardingLocation) {
-                // Precise Haversine could be used, but simple Euclidean is fine for this demo scale
-                const latDelta = dropLocation.latitude - tripData.boardingLocation.latitude;
-                const lngDelta = dropLocation.longitude - tripData.boardingLocation.longitude;
-                distanceKm = Math.sqrt(latDelta * latDelta + lngDelta * lngDelta) * 111; // 1 deg ~= 111km
+                const lat1 = tripData.boardingLocation.latitude * Math.PI / 180;
+                const lat2 = dropLocation.latitude * Math.PI / 180;
+                const dLat = (dropLocation.latitude - tripData.boardingLocation.latitude) * Math.PI / 180;
+                const dLon = (dropLocation.longitude - tripData.boardingLocation.longitude) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) ** 2 +
+                          Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+                distanceKm = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             }
 
             const totalFare = Math.max(baseFare, Math.round(baseFare + (distanceKm * perKm)));
@@ -53,8 +56,7 @@ export async function signalDrop(request: HttpRequest, context: InvocationContex
             const currentBalance = passSnap.data()?.walletBalance || 0;
             
             if (currentBalance < finalDeduction) {
-                // We allow it to go negative in emergencies but log it
-                console.warn(`Passenger ${tripData.passengerId} has insufficient funds but journey completed. Balance: ${currentBalance}, Charge: ${finalDeduction}`);
+                throw new Error('Insufficient wallet balance. Please top up before your next journey.');
             }
 
             t.update(passengerRef, { walletBalance: currentBalance - finalDeduction });

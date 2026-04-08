@@ -143,7 +143,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                       const Text('Recent Trip Deductions', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 16),
                       
-                      _buildRealTransactionHistory(passenger.userId),
+                      _buildRealTransactionHistory(passenger.passengerId),
                     ],
                   ),
                   if (_isLoading)
@@ -198,12 +198,12 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     );
   }
 
-  Widget _buildRealTransactionHistory(String userId) {
+  Widget _buildRealTransactionHistory(String passengerId) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('trips')
-          .where('userId', isEqualTo: userId)
-          .orderBy('boardedAt', descending: true)
+          .where('passengerId', isEqualTo: passengerId)
+          .orderBy('boardingTime', descending: true)
           .limit(10)
           .snapshots(),
       builder: (context, snapshot) {
@@ -215,9 +215,12 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
           children: snapshot.data!.docs.map((doc) {
             final data = doc.data() as Map<String, dynamic>;
             final currencyFormat = NumberFormat('#,##0.00', 'en_US');
-            final fareCents = data['fareCents'] as int? ?? 0;
-            final dateStr = DateFormat("MMM d, h:mm a").format((data['boardedAt'] as Timestamp).toDate());
-            final title = 'Trip: ' + (data['boardingStopName'] ?? 'Unknown');
+            final fareCents = (data['fareCents'] as int?) ?? (data['finalFare'] as int?) ?? 0;
+            final rawTime = data['boardingTime'] as String?;
+            final dateStr = rawTime != null
+                ? DateFormat("MMM d, h:mm a").format(DateTime.parse(rawTime))
+                : '—';
+            final title = 'Trip: ${data['boardingStopName'] ?? 'Unknown'}';
             
             return Container(
               margin: const EdgeInsets.only(bottom: 12),

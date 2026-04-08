@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../constants/app_constants.dart';
 import '../../models/user_model.dart';
-import '../../models/bus_model.dart';
-import '../../models/route_model.dart';
-import '../../models/trip_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

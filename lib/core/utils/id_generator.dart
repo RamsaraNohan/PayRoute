@@ -21,4 +21,11 @@ class IdGenerator {
     ).join();
     return '$prefix-$suffix';
   }
+
+  /// Truncates a raw UID to [maxLength] chars and appends '...' for display.
+  /// Returns the full ID unchanged when it is shorter than [maxLength].
+  static String truncate(String id, {int maxLength = 8}) {
+    if (id.length <= maxLength) return id;
+    return '${id.substring(0, maxLength)}...';
+  }
 }

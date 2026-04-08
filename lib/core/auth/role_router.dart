@@ -72,12 +72,6 @@ class _RoleRouterState extends State<RoleRouter> {
 
         final result = snapshot.data;
 
-        if (result == null || result is NeedsRoleSelection) {
-          // TODO: point to new role selection, but for now just use standard pass-through or placeholder
-          // since role_selection_screen.dart is in Phase 4. We will import and route to it once ready.
-          // Replacing RegistrationScreen.
-        }
-
         return _buildNavFromResult(result);
       },
     );
@@ -105,11 +99,6 @@ class _RoleRouterState extends State<RoleRouter> {
     }
     if (result is HasStaffInvite) {
       return StaffInviteScreen(inviteData: result.inviteData);
-    }
-    if (result is MultipleRoles) {
-      // Phase 7 will add RoleSwitchScreen.
-      // For now, default to first role
-      return _getDashboardForRole(result.roles.first);
     }
     if (result is GoToDashboard) {
       return _getDashboardForRole(result.role);
