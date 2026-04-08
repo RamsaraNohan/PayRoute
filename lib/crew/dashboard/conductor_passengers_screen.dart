@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/id_generator.dart';
 
 class ConductorPassengersScreen extends StatelessWidget {
   const ConductorPassengersScreen({super.key});
@@ -92,7 +93,7 @@ class ConductorPassengersScreen extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Passenger ${pId.length >= 8 ? pId.substring(0, 8) : pId}',
+                                            'Passenger ${IdGenerator.truncate(pId)}',
                                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                                           ),
                                           Text(

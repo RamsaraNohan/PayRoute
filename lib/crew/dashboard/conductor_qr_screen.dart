@@ -3,6 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/id_generator.dart';
 
 class ConductorQrScreen extends StatelessWidget {
   const ConductorQrScreen({super.key});
@@ -63,7 +64,7 @@ class ConductorQrScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    'Bus: $busId  •  Conductor: ${conductorId.length >= 8 ? conductorId.substring(0, 8) : conductorId}...',
+                    'Bus: $busId  •  Conductor: ${IdGenerator.truncate(conductorId)}',
                     style: const TextStyle(color: Colors.white60, fontSize: 12),
                   ),
                 ),

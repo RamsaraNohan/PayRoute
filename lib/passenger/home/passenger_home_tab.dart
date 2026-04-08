@@ -321,7 +321,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${data['boardingStopName'] ?? 'Start'} → ${data['destinationStopId'] ?? 'End'}', 
+                        Text('${data['boardingStopName'] ?? 'Start'} → ${data['destinationStopName'] ?? data['destinationStopId'] ?? 'End'}', 
                              maxLines: 1, overflow: TextOverflow.ellipsis,
                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
                         const SizedBox(height: 4),
