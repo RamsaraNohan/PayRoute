@@ -8,6 +8,8 @@ import '../../core/theme/app_theme.dart';
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
+  static const int _maxNotifications = 40;
+
   static const Map<String, _NotifMeta> _actionMeta = {
     'LOGIN': _NotifMeta('Signed In', Icons.login_rounded, Colors.blueAccent),
     'REGISTER_PASSENGER': _NotifMeta('Account Created', Icons.person_add_rounded, Colors.green),
@@ -38,7 +40,7 @@ class NotificationsScreen extends StatelessWidget {
               .collection('activityLogs')
               .where('userId', isEqualTo: uid)
               .orderBy('timestamp', descending: true)
-              .limit(40)
+              .limit(_maxNotifications)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {

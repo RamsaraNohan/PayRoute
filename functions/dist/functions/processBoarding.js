@@ -15,7 +15,7 @@ async function processBoarding(request, context) {
         const { tokenId, conductorId, busId, boardingLocation } = body;
         // Verify the authenticated user is the conductor making this request
         if (callerUid !== conductorId) {
-            return { status: 403, jsonBody: { error: 'Forbidden: caller is not the specified conductor' } };
+            return { status: 403, jsonBody: { error: 'Forbidden: unauthorized access' } };
         }
         // Run within a transaction
         const result = await firebaseAdmin_1.db.runTransaction(async (t) => {

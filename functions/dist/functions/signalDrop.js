@@ -21,7 +21,7 @@ async function signalDrop(request, context) {
             const tripData = tripSnap.data();
             // Verify the authenticated user is the passenger for this trip
             if (callerUid !== tripData.passengerId) {
-                throw new Error('Forbidden: caller is not the passenger for this trip');
+                throw new Error('Forbidden: unauthorized access');
             }
             if (tripData.status !== 'ONGOING')
                 throw new Error('Trip already completed');

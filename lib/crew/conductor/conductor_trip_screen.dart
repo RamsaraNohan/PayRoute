@@ -176,20 +176,25 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
           stream: FirebaseFirestore.instance
               .collection('trips')
               .where('tripSessionId', isEqualTo: _tripId)
-              .where('status', isEqualTo: 'ONGOING')
               .snapshots(),
           builder: (context, snap) {
-            final boarded = snap.data?.docs.length ?? 0;
+            final docs = snap.data?.docs ?? [];
+            final boarded = docs.where((d) {
+              final data = d.data() as Map<String, dynamic>;
+              return data['status'] == 'ONGOING' || data['status'] == 'COMPLETED';
+            }).length;
             final currency = NumberFormat('#,##0.00', 'en_US');
-            final totalCents = (snap.data?.docs ?? []).fold<int>(0, (sum, doc) {
+            final totalCents = docs.fold<int>(0, (sum, doc) {
               final data = doc.data() as Map<String, dynamic>;
-              return sum + ((data['fareBase'] as int?) ?? 0);
+              // Only count fare for completed trips
+              if (data['status'] != 'COMPLETED') return sum;
+              return sum + ((data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0);
             });
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _statItem('Boarded', '$boarded', Icons.people_outline),
-                _statItem('Est. Revenue', 'LKR ${currency.format(totalCents / 100)}', Icons.account_balance_wallet_outlined),
+                _statItem('Revenue', 'LKR ${currency.format(totalCents / 100)}', Icons.account_balance_wallet_outlined),
               ],
             );
           },

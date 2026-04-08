@@ -68,8 +68,8 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
         (route) => false,
       );
     } catch (e) {
-      setState(() => _isLoading = false);
       if (!mounted) return;
+      setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid OTP: $e')));
     }
   }

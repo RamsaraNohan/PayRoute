@@ -17,7 +17,7 @@ export async function processBoarding(request: HttpRequest, context: InvocationC
 
         // Verify the authenticated user is the conductor making this request
         if (callerUid !== conductorId) {
-            return { status: 403, jsonBody: { error: 'Forbidden: caller is not the specified conductor' } };
+            return { status: 403, jsonBody: { error: 'Forbidden: unauthorized access' } };
         }
 
         // Run within a transaction

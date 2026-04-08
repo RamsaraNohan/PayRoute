@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 
 class InviteService {
   static final _db = FirebaseFirestore.instance;
+  static const int _inviteExpirationDays = 7;
 
   /// Generates a staff invitation and returns a shareable link.
   /// Format: payroute://invite?id=XYZ
@@ -14,7 +15,7 @@ class InviteService {
     required String businessName,
   }) async {
     final inviteId = IdGenerator.generate('INV');
-    final expiresAt = DateTime.now().add(const Duration(days: 7));
+    final expiresAt = DateTime.now().add(const Duration(days: _inviteExpirationDays));
     
     await _db.collection('staffInvites').doc(inviteId).set({
       'inviteId': inviteId,

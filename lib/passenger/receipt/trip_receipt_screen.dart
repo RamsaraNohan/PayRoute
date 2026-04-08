@@ -33,7 +33,7 @@ class TripReceiptScreen extends StatelessWidget {
           'Total Charged: LKR ${currency.format(totalFare / 100)}\n'
           '----------------------------\n'
           'Powered by PayRoute';
-      SharePlus.instance.share(ShareParams(text: text, subject: 'My PayRoute Trip Receipt'));
+      Share.share(text, subject: 'My PayRoute Trip Receipt');
     }
 
     return Scaffold(

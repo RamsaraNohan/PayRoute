@@ -28,7 +28,7 @@ class _HelpFaqScreenState extends State<HelpFaqScreen> {
     ),
     _FaqItem(
       question: 'How is the fare calculated?',
-      answer: 'The fare is based on a base rate plus the GPS distance travelled (using the Haversine formula). Companions you registered are included in the total deduction.',
+      answer: 'The fare is based on a base rate plus the GPS distance traveled (using the Haversine formula). Companions you registered are included in the total deduction.',
     ),
     _FaqItem(
       question: 'Can I edit my NIC after registration?',
