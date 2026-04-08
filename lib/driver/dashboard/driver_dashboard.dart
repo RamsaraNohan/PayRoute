@@ -98,15 +98,15 @@ class DriverDashboard extends StatelessWidget {
           decoration: AppTheme.glassCard(),
           child: Column(
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.directions_bus, color: AppTheme.purpleLight, size: 40),
-                  SizedBox(width: 16),
+                  const Icon(Icons.directions_bus, color: AppTheme.purpleLight, size: 40),
+                  const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Assigned Fleet', style: TextStyle(color: Colors.white54, fontSize: 12)),
-                      Text('Bus #01', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                      const Text('Assigned Fleet', style: TextStyle(color: Colors.white54, fontSize: 12)),
+                      Text(busData['registrationNumber'] ?? busId, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ],

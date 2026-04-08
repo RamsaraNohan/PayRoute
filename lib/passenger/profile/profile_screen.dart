@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
 import '../complaint/complaint_screen.dart';
+import '../help/help_faq_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -61,14 +63,17 @@ class ProfileScreen extends ConsumerWidget {
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: AppTheme.purpleLight,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: AppTheme.backgroundDark, width: 2),
+                            child: GestureDetector(
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())),
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.purpleLight,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: AppTheme.backgroundDark, width: 2),
+                                ),
+                                child: const Icon(Icons.edit, color: Colors.white, size: 14),
                               ),
-                              child: const Icon(Icons.edit, color: Colors.white, size: 14),
                             ),
                           ),
                         ],
@@ -140,11 +145,19 @@ class ProfileScreen extends ConsumerWidget {
                   'Help & FAQ',
                   'Get answers to common questions',
                   Colors.blueAccent,
-                  () {},
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpFaqScreen())),
                 ),
 
                 const SizedBox(height: 24),
                 _sectionTitle('Account'),
+                _actionTile(
+                  context,
+                  Icons.edit_outlined,
+                  'Edit Profile',
+                  'Update your name, address and contacts',
+                  AppTheme.purpleLight,
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())),
+                ),
                 _actionTile(
                   context,
                   Icons.logout,

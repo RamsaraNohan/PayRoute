@@ -26,7 +26,7 @@ class ConductorEarningsScreen extends StatelessWidget {
           final trips = snapshot.data?.docs ?? [];
           final totalCents = trips.fold<int>(0, (sum, doc) {
             final data = doc.data() as Map<String, dynamic>;
-            return sum + ((data['fareCents'] as int?) ?? 4500);
+            return sum + ((data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0);
           });
 
           return ListView(
@@ -96,7 +96,7 @@ class ConductorEarningsScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'LKR ${currency.format(((data['fareCents'] as int?) ?? 4500) / 100)}',
+                        'LKR ${currency.format(((data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0) / 100)}',
                         style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
                       ),
                     ],

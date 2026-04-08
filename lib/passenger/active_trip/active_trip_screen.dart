@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cf;
 import '../../core/theme/app_theme.dart';
 import '../complaint/complaint_screen.dart';
+import '../check_in/check_in_screen.dart';
 
 class ActiveTripScreen extends StatefulWidget {
   final Map<String, dynamic> tripData;
@@ -169,7 +170,7 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
-                      onPressed: () => Navigator.pop(context), // Go back to CheckIn to scan again
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CheckInScreen())),
                       icon: const Icon(Icons.qr_code_scanner),
                       label: const Text('OPEN SCANNER'),
                       style: AppTheme.primaryButton(),

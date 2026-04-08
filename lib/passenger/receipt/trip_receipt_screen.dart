@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/theme/app_theme.dart';
 
 class TripReceiptScreen extends StatelessWidget {
@@ -9,15 +10,31 @@ class TripReceiptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat('#,##0.00', 'en_US');
-    final fareCents = (tripData['fareCents'] as int?) ?? 4500;
+    final companions = (tripData['companionCount'] as int?) ?? 0;
     final boardingTime = tripData['boardingTime'] != null
         ? DateFormat('MMM dd, yyyy  hh:mm a').format(DateTime.parse(tripData['boardingTime']))
         : '—';
     final dropTime = tripData['dropTime'] != null
         ? DateFormat('hh:mm a').format(DateTime.parse(tripData['dropTime']))
         : '—';
-    final companions = (tripData['companionCount'] as int?) ?? 0;
-    final totalFare = fareCents * (1 + companions);
+    // finalFare already includes all companions (calculated in signalDrop backend)
+    // Use finalFare first, fall back to fareCents for legacy records
+    final totalFare = (tripData['finalFare'] as int?) ?? (tripData['fareCents'] as int?) ?? 4500;
+    final farePerPerson = companions > 0 ? (totalFare ~/ (1 + companions)) : totalFare;
+
+    void shareReceipt() {
+      final text = 'PayRoute Trip Receipt\n'
+          '----------------------------\n'
+          'Bus: ${tripData['busId'] ?? '—'}\n'
+          'Destination: ${tripData['destinationStopId'] ?? '—'}\n'
+          'Boarded: $boardingTime\n'
+          'Dropped: $dropTime\n'
+          '${companions > 0 ? 'Companions: +$companions\nFare/person: LKR ${currency.format(farePerPerson / 100)}\n' : ''}'
+          'Total Charged: LKR ${currency.format(totalFare / 100)}\n'
+          '----------------------------\n'
+          'Powered by PayRoute';
+      SharePlus.instance.share(ShareParams(text: text, subject: 'My PayRoute Trip Receipt'));
+    }
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
@@ -28,7 +45,7 @@ class TripReceiptScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
-            onPressed: () {}, // Share receipt
+            onPressed: shareReceipt,
           ),
         ],
       ),
@@ -80,7 +97,7 @@ class TripReceiptScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Fare per person', style: TextStyle(color: Colors.white54)),
-                        Text('LKR ${currency.format(fareCents / 100)}', style: const TextStyle(color: Colors.white)),
+                        Text('LKR ${currency.format(farePerPerson / 100)}', style: const TextStyle(color: Colors.white)),
                       ],
                     ),
                     if (companions > 0) ...[

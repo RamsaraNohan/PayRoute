@@ -271,7 +271,7 @@ class _AdminComplaintsTab extends StatelessWidget {
                 children: [
                   Text(data['category'] ?? 'General Complaint', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text(data['description'] ?? '', style: const TextStyle(color: Colors.white70)),
+                  Text(data['content'] ?? data['description'] ?? '', style: const TextStyle(color: Colors.white70)),
                   const Divider(color: Colors.white10, height: 24),
                   Text('Bus: ${data['busId']}', style: const TextStyle(color: Colors.white38, fontSize: 11)),
                 ],

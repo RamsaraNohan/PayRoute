@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/trip_service.dart';
 
@@ -170,13 +171,28 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
           style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 24),
-        // Live counters
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _statItem('Boarded', '0', Icons.people_outline),
-            _statItem('Revenue', 'LKR 0', Icons.account_balance_wallet_outlined),
-          ],
+        // Live counters from Firestore
+        StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('trips')
+              .where('tripSessionId', isEqualTo: _tripId)
+              .where('status', isEqualTo: 'ONGOING')
+              .snapshots(),
+          builder: (context, snap) {
+            final boarded = snap.data?.docs.length ?? 0;
+            final currency = NumberFormat('#,##0.00', 'en_US');
+            final totalCents = (snap.data?.docs ?? []).fold<int>(0, (sum, doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              return sum + ((data['fareBase'] as int?) ?? 0);
+            });
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _statItem('Boarded', '$boarded', Icons.people_outline),
+                _statItem('Est. Revenue', 'LKR ${currency.format(totalCents / 100)}', Icons.account_balance_wallet_outlined),
+              ],
+            );
+          },
         ),
       ],
     );

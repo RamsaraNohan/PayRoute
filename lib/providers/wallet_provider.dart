@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../core/utils/audit_logger.dart';
 import 'passenger_provider.dart';
 import 'auth_provider.dart';
 
@@ -21,6 +23,11 @@ class WalletBalance extends _$WalletBalance {
     if (passenger != null) {
       final firestoreService = ref.read(firestoreServiceProvider);
       await firestoreService.updatePassengerBalance(passenger.passengerId, amountCents);
+
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        await AuditLogger.log(uid, 'TOP_UP', {'amountCents': amountCents});
+      }
     }
   }
 }

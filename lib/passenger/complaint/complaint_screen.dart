@@ -34,6 +34,27 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+      // Rate limit: prevent more than 1 complaint per 15 minutes
+      final cutoff = Timestamp.fromDate(DateTime.now().subtract(const Duration(minutes: 15)));
+      final recent = await FirebaseFirestore.instance
+          .collection('complaints')
+          .where('passengerId', isEqualTo: uid)
+          .where('createdAt', isGreaterThan: cutoff)
+          .limit(1)
+          .get();
+      if (recent.docs.isNotEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please wait 15 minutes before filing another complaint.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        setState(() => _isSubmitting = false);
+        return;
+      }
+
       await FirebaseFirestore.instance.collection('complaints').add({
         'passengerId': uid,
         'tripId': widget.tripId,

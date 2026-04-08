@@ -11,6 +11,7 @@ import '../../providers/active_trip_provider.dart';
 import '../active_trip/active_trip_screen.dart';
 import '../history/trip_history_screen.dart';
 import '../../auth/role_selection_screen.dart';
+import '../notifications/notifications_screen.dart';
 
 class PassengerHomeTab extends StatefulWidget {
   const PassengerHomeTab({super.key});
@@ -144,7 +145,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(icon: const Icon(Icons.notifications, color: Colors.white), onPressed: () {}),
+            IconButton(icon: const Icon(Icons.notifications, color: Colors.white), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()))),
             CircleAvatar(
               backgroundColor: AppTheme.purpleLight,
               backgroundImage: passenger.profilePhotoUrl.isNotEmpty ? NetworkImage(passenger.profilePhotoUrl) : null,

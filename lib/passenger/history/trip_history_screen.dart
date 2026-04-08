@@ -54,7 +54,7 @@ class TripHistoryScreen extends StatelessWidget {
             itemCount: trips.length,
             itemBuilder: (context, index) {
               final data = trips[index].data() as Map<String, dynamic>;
-              final fareCents = (data['fareCents'] as int?) ?? 4500;
+              final fareCents = (data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0;
               final boardingTime = data['boardingTime'] != null
                   ? DateFormat('MMM dd, hh:mm a').format(DateTime.parse(data['boardingTime']))
                   : '—';
