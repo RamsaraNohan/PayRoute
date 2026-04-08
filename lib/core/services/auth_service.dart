@@ -162,9 +162,9 @@ class AuthService {
   Future<Map<String, dynamic>?> _checkStaffInvite(String phone) async {
     String cleaned = phone.trim();
     if (cleaned.startsWith('+94')) {
-      cleaned = '0\${cleaned.substring(3)}';
+      cleaned = '0${cleaned.substring(3)}';
     } else if (cleaned.startsWith('94')) {
-      cleaned = '0\${cleaned.substring(2)}';
+      cleaned = '0${cleaned.substring(2)}';
     }
 
     final invites = await _db

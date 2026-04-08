@@ -400,7 +400,7 @@ class _BusEditFormState extends State<_BusEditForm> {
   Widget _field(TextEditingController c, String l, IconData i, String? Function(String?)? v, [TextInputType? kt]) {
     return TextFormField(controller: c, validator: v, keyboardType: kt, style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(labelText: l, labelStyle: const TextStyle(color: Colors.white60), prefixIcon: Icon(i, color: AppTheme.purpleLight),
-            filled: true, fillColor: Colors.white.withOpacity(0.05), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)));
+            filled: true, fillColor: Colors.white.withValues(alpha: 0.05), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)));
   }
 
   Widget _staffDropdown(String label, String role, Function(String?) onChanged) {
@@ -422,7 +422,7 @@ class _BusEditFormState extends State<_BusEditForm> {
             labelStyle: const TextStyle(color: Colors.white60),
             prefixIcon: Icon(role == 'driver' ? Icons.drive_eta : Icons.badge, color: AppTheme.purpleLight),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.05),
+            fillColor: Colors.white.withValues(alpha: 0.05),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
           ),
           items: [
@@ -521,7 +521,7 @@ class _OwnerStaffTab extends StatelessWidget {
                         child: Row(
                           children: [
                             CircleAvatar(
-                              backgroundColor: isDriver ? Colors.blue.withOpacity(0.1) : AppTheme.purpleLight.withOpacity(0.1),
+                              backgroundColor: isDriver ? Colors.blue.withValues(alpha: 0.1) : AppTheme.purpleLight.withValues(alpha: 0.1),
                               child: Icon(isDriver ? Icons.drive_eta : Icons.badge, color: isDriver ? Colors.blue : AppTheme.purpleLight),
                             ),
                             const SizedBox(width: 16),
@@ -532,7 +532,7 @@ class _OwnerStaffTab extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: (status == 'active' ? Colors.green : Colors.amber).withOpacity(0.1),
+                                color: (status == 'active' ? Colors.green : Colors.amber).withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(

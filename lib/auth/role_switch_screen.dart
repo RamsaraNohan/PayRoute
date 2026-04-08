@@ -144,7 +144,7 @@ class RoleSwitchScreen extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.02),
+          color: Colors.white.withValues(alpha: 0.02),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.white10, width: 1),
         ),

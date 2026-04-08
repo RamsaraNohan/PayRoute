@@ -97,7 +97,7 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
                   ElevatedButton(
                     onPressed: _toggleTrip,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _tripStarted ? Colors.redAccent.withOpacity(0.2) : AppTheme.purpleLight,
+                      backgroundColor: _tripStarted ? Colors.redAccent.withValues(alpha: 0.2) : AppTheme.purpleLight,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -116,7 +116,7 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
   Widget _buildIdleState() {
     return Column(
       children: [
-        Icon(Icons.qr_code_scanner, size: 100, color: Colors.white.withOpacity(0.1)),
+        Icon(Icons.qr_code_scanner, size: 100, color: Colors.white.withValues(alpha: 0.1)),
         const SizedBox(height: 24),
         const Text(
           'Ready to Start?',
@@ -126,7 +126,7 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
         Text(
           'Starting a trip will generate a unique QR code for passengers to scan for boarding and dropping.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 16),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 16),
         ),
       ],
     );
@@ -145,7 +145,7 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.purpleLight.withOpacity(0.3),
+                color: AppTheme.purpleLight.withValues(alpha: 0.3),
                 blurRadius: 30,
                 spreadRadius: 5,
               )

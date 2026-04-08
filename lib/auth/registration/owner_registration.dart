@@ -247,7 +247,7 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
           const SizedBox(height: 12),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             IconButton(icon: const Icon(Icons.remove, color: Colors.white), onPressed: () => setState(() => _busCount = _busCount > 1 ? _busCount - 1 : 1)),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8), decoration: BoxDecoration(color: context.primaryColor.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text('$_busCount', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold))),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8), decoration: BoxDecoration(color: context.primaryColor.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(8)), child: Text('$_busCount', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold))),
             IconButton(icon: const Icon(Icons.add, color: Colors.white), onPressed: () => setState(() => _busCount++)),
           ]),
         ])),
@@ -322,7 +322,7 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
   }
 
   InputDecoration _inputDecoration(String label, IconData icon) {
-    return InputDecoration(labelText: label, labelStyle: const TextStyle(color: Colors.white60), prefixIcon: Icon(icon, color: AppTheme.purpleLight), filled: true, fillColor: Colors.white.withOpacity(0.05), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none), enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.white10)), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.purpleLight)));
+    return InputDecoration(labelText: label, labelStyle: const TextStyle(color: Colors.white60), prefixIcon: Icon(icon, color: AppTheme.purpleLight), filled: true, fillColor: Colors.white.withValues(alpha: 0.05), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none), enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.white10)), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.purpleLight)));
   }
 
   @override void dispose() { _nameController.dispose(); _addressController.dispose(); _nicController.dispose(); _businessNameController.dispose(); _secondaryPhoneController.dispose(); for (var b in _fleet) { b.dispose(); } super.dispose(); }

@@ -201,8 +201,8 @@ class _AdvanceBookingScreenState extends State<AdvanceBookingScreen> {
                     label: Text(pref),
                     selected: selected,
                     onSelected: (_) => setState(() => _selectedSeatPref = pref),
-                    selectedColor: AppTheme.purpleLight.withOpacity(0.3),
-                    backgroundColor: Colors.white.withOpacity(0.05),
+                    selectedColor: AppTheme.purpleLight.withValues(alpha: 0.3),
+                    backgroundColor: Colors.white.withValues(alpha: 0.05),
                     labelStyle: TextStyle(color: selected ? AppTheme.purpleLight : Colors.white60),
                     side: BorderSide(color: selected ? AppTheme.purpleLight : Colors.white12),
                   );

@@ -15,7 +15,7 @@ class AzureFunctionsService {
   }) async {
     if (kUseMockFunctions) {
       await Future.delayed(const Duration(seconds: 1));
-      return 'mock_token_\${DateTime.now().millisecondsSinceEpoch}';
+      return 'mock_token_${DateTime.now().millisecondsSinceEpoch}';
     }
 
     try {
@@ -23,10 +23,10 @@ class AzureFunctionsService {
       if (idToken == null) return null;
 
       final response = await http.post(
-        Uri.parse('\$azureBaseUrl/generateToken'),
+        Uri.parse('$azureBaseUrl/generateToken'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer \$idToken',
+          'Authorization': 'Bearer $idToken',
         },
         body: jsonEncode({
           'destinationStopId': destinationStopId,
@@ -64,10 +64,10 @@ class AzureFunctionsService {
       if (idToken == null) return null;
 
       final response = await http.post(
-        Uri.parse('\$azureBaseUrl/processBoarding'),
+        Uri.parse('$azureBaseUrl/processBoarding'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer \$idToken',
+          'Authorization': 'Bearer $idToken',
         },
         body: jsonEncode({
           'tokenId': tokenId,
@@ -96,10 +96,10 @@ class AzureFunctionsService {
       if (idToken == null) return false;
 
       final response = await http.post(
-        Uri.parse('\$azureBaseUrl/signalDrop'),
+        Uri.parse('$azureBaseUrl/signalDrop'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer \$idToken',
+          'Authorization': 'Bearer $idToken',
         },
         body: jsonEncode({'tripId': tripId}),
       );

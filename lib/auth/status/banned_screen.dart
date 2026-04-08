@@ -22,7 +22,7 @@ class BannedScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white24, width: 2),
                   ),

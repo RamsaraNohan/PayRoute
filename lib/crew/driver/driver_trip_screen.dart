@@ -135,7 +135,7 @@ class _DriverTripScreenState extends State<DriverTripScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+                  colors: [Colors.black.withValues(alpha: 0.8), Colors.transparent],
                 ),
               ),
               child: Row(
@@ -179,7 +179,7 @@ class _DriverTripScreenState extends State<DriverTripScreen> {
                     minimumSize: const Size(double.infinity, 56),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     elevation: 10,
-                    shadowColor: (_tripStarted ? Colors.redAccent : AppTheme.purpleLight).withOpacity(0.5),
+                    shadowColor: (_tripStarted ? Colors.redAccent : AppTheme.purpleLight).withValues(alpha: 0.5),
                   ),
                   child: Text(_tripStarted ? 'FINISH JOURNEY' : 'START JOURNEY'),
                 ),

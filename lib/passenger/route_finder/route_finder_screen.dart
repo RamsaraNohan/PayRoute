@@ -35,7 +35,7 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                 hintStyle: const TextStyle(color: Colors.white54),
                 prefixIcon: const Icon(Icons.search, color: Colors.white54),
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.05),
+                fillColor: Colors.white.withValues(alpha: 0.05),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -49,7 +49,7 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                 itemBuilder: (context, index) {
                   final route = _mockRoutes[index];
                   return Card(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     margin: const EdgeInsets.only(bottom: 12),
                     child: ListTile(
                       leading: const CircleAvatar(
