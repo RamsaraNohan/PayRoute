@@ -74,7 +74,8 @@ export async function createPaymentSession(
             createdAt: new Date().toISOString(),
         });
 
-        const notifyBaseUrl = process.env["AZURE_FUNCTION_BASE_URL"] ?? "https://payroute-functions.azurewebsites.net/api";
+        const notifyBaseUrl = process.env["AZURE_FUNCTION_BASE_URL"]
+            ?? "https://payroute-functions-ajcgebh7a2axe3cw.southeastasia-01.azurewebsites.net/api";
 
         return {
             status: 200,

@@ -33,6 +33,7 @@ class TripService {
   static Future<void> processBoarding({
     required String tripId,
     required String passengerId,
+    required String busId,
     required GeoPoint location,
   }) async {
     final passengerTripId = IdGenerator.generate('PT');
@@ -41,6 +42,7 @@ class TripService {
       'passengerTripId': passengerTripId,
       'tripId': tripId,
       'passengerId': passengerId,
+      'busId': busId,
       'entryLocation': location,
       'boardedAt': FieldValue.serverTimestamp(),
       'status': 'BOARDED',
@@ -85,10 +87,13 @@ class TripService {
       final currentBalance = (passengerSnap.data() as Map)['walletBalance'] ?? 0;
       if (currentBalance < finalFareCents) throw Exception('Insufficient wallet balance.');
 
-      // Get Owner through Bus
-      final tripSnap = await _db.collection('activeTrips').doc(tripId).get();
+      // Get Owner through Bus — use transaction.get() for atomicity
+      final tripRef = _db.collection('activeTrips').doc(tripId);
+      final tripSnap = await transaction.get(tripRef);
       final busId = tripSnap.data()?['busId'];
-      final busSnap = await _db.collection('buses').doc(busId).get();
+
+      final busRef = _db.collection('buses').doc(busId);
+      final busSnap = await transaction.get(busRef);
       final ownerId = busSnap.data()?['ownerId'];
       final ownerRef = _db.collection('owners').doc(ownerId);
 

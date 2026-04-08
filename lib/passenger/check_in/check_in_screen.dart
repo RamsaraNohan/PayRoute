@@ -17,9 +17,22 @@ class CheckInScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckInScreenState extends ConsumerState<CheckInScreen> {
+  late final MobileScannerController _scannerController;
   bool _isScanning = true;
   bool _processing = false;
   int _companions = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scannerController = MobileScannerController();
+  }
+
+  @override
+  void dispose() {
+    _scannerController.dispose();
+    super.dispose();
+  }
 
   Future<void> _handleScan(BarcodeCapture capture) async {
     if (!_isScanning || _processing) return;
@@ -30,6 +43,8 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
       
       // Expected Format: trip:TRIP_ID:bus:BUS_ID
       if (!code.startsWith('trip:')) return;
+      final parts = code.split(':');
+      if (parts.length < 4) return;
 
       setState(() {
         _isScanning = false;
@@ -37,8 +52,8 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
       });
 
       try {
-        final parts = code.split(':');
         final tripId = parts[1];
+        final busId = parts[3];
         
         final passenger = ref.read(passengerStreamProvider).value;
         if (passenger == null) throw Exception('Passenger profile not found.');
@@ -63,6 +78,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
           await TripService.processBoarding(
             tripId: tripId,
             passengerId: passenger.passengerId,
+            busId: busId,
             location: location,
           );
           if (!mounted) return;
@@ -116,6 +132,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
         children: [
           // SCANNER LAYER
           MobileScanner(
+            controller: _scannerController,
             onDetect: _handleScan,
           ),
           

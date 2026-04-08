@@ -271,9 +271,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
   Widget _buildRealTransactionHistory(String passengerId) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('trips')
+          .collection('passengerTrips')
           .where('passengerId', isEqualTo: passengerId)
-          .orderBy('boardingTime', descending: true)
+          .where('status', isEqualTo: 'COMPLETED')
+          .orderBy('boardedAt', descending: true)
           .limit(10)
           .snapshots(),
       builder: (context, snapshot) {
@@ -285,12 +286,12 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
           children: snapshot.data!.docs.map((doc) {
             final data = doc.data() as Map<String, dynamic>;
             final currencyFormat = NumberFormat('#,##0.00', 'en_US');
-            final fareCents = (data['fareCents'] as int?) ?? (data['finalFare'] as int?) ?? 0;
-            final rawTime = data['boardingTime'] as String?;
-            final dateStr = rawTime != null
-                ? DateFormat("MMM d, h:mm a").format(DateTime.parse(rawTime))
+            final fareCents = (data['fareCents'] as int?) ?? 0;
+            final boardedAtTs = data['boardedAt'] as Timestamp?;
+            final dateStr = boardedAtTs != null
+                ? DateFormat("MMM d, h:mm a").format(boardedAtTs.toDate())
                 : '—';
-            final title = 'Trip: ${data['boardingStopName'] ?? 'Unknown'}';
+            final title = 'Bus: ${data['busId'] ?? 'Unknown'}';
             
             return Container(
               margin: const EdgeInsets.only(bottom: 12),

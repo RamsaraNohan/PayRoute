@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
+import '../../providers/passenger_provider.dart';
 import '../receipt/trip_receipt_screen.dart';
 
-class TripHistoryScreen extends StatelessWidget {
+class TripHistoryScreen extends ConsumerWidget {
   const TripHistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+  Widget build(BuildContext context, WidgetRef ref) {
     final currency = NumberFormat('#,##0.00', 'en_US');
+    final passengerAsync = ref.watch(passengerStreamProvider);
+    final passengerId = passengerAsync.value?.passengerId ?? '';
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
@@ -20,11 +22,13 @@ class TripHistoryScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: StreamBuilder<QuerySnapshot>(
+      body: passengerId.isEmpty
+          ? const Center(child: CircularProgressIndicator(color: Colors.white))
+          : StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('trips')
-            .where('passengerId', isEqualTo: uid)
-            .orderBy('boardingTime', descending: true)
+            .collection('passengerTrips')
+            .where('passengerId', isEqualTo: passengerId)
+            .orderBy('boardedAt', descending: true)
             .limit(50)
             .snapshots(),
         builder: (context, snapshot) {
@@ -54,19 +58,24 @@ class TripHistoryScreen extends StatelessWidget {
             itemCount: trips.length,
             itemBuilder: (context, index) {
               final data = trips[index].data() as Map<String, dynamic>;
-              final fareCents = (data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0;
-              final boardingTime = data['boardingTime'] != null
-                  ? DateFormat('MMM dd, hh:mm a').format(DateTime.parse(data['boardingTime']))
+              final fareCents = (data['fareCents'] as int?) ?? 0;
+              final boardedAtTs = data['boardedAt'] as Timestamp?;
+              final boardingTime = boardedAtTs != null
+                  ? DateFormat('MMM dd, hh:mm a').format(boardedAtTs.toDate())
                   : '—';
               final isCompleted = data['status'] == 'COMPLETED';
-              final isOngoing = data['status'] == 'ONGOING';
+              final isOngoing = data['status'] == 'BOARDED';
+              final busId = data['busId'] as String? ?? '—';
 
               return GestureDetector(
                 onTap: isCompleted
                     ? () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TripReceiptScreen(tripData: data),
+                            builder: (_) => TripReceiptScreen(tripData: {
+                              ...data,
+                              'boardingTime': boardedAtTs?.toDate().toIso8601String(),
+                            }),
                           ),
                         )
                     : null,
@@ -94,7 +103,7 @@ class TripHistoryScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Bus: ${data['busId'] ?? '—'}  →  ${data['destinationStopId'] ?? '?'}',
+                              'Bus: $busId',
                               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
                             ),
                             const SizedBox(height: 4),
@@ -117,7 +126,7 @@ class TripHistoryScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              data['status'] ?? '—',
+                              isOngoing ? 'ON BUS' : (data['status'] ?? '—'),
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,

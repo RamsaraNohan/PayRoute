@@ -2,7 +2,7 @@ import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functio
 import { db, fcm } from "../services/firebaseAdmin";
 import * as crypto from "crypto";
 
-const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "";
+const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "1234614";
 const MERCHANT_SECRET = process.env["PAYHERE_MERCHANT_SECRET"] ?? "";
 
 // Note: MD5 is required by the PayHere payment gateway specification for HMAC verification

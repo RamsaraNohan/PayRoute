@@ -174,21 +174,20 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
         // Live counters from Firestore
         StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('trips')
-              .where('tripSessionId', isEqualTo: _tripId)
+              .collection('passengerTrips')
+              .where('tripId', isEqualTo: _tripId)
               .snapshots(),
           builder: (context, snap) {
             final docs = snap.data?.docs ?? [];
             final boarded = docs.where((d) {
               final data = d.data() as Map<String, dynamic>;
-              return data['status'] == 'ONGOING' || data['status'] == 'COMPLETED';
+              return data['status'] == 'BOARDED' || data['status'] == 'COMPLETED';
             }).length;
             final currency = NumberFormat('#,##0.00', 'en_US');
             final totalCents = docs.fold<int>(0, (sum, doc) {
               final data = doc.data() as Map<String, dynamic>;
-              // Only count fare for completed trips
               if (data['status'] != 'COMPLETED') return sum;
-              return sum + ((data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0);
+              return sum + ((data['fareCents'] as int?) ?? 0);
             });
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
