@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
-import 'core/services/fcm_service.dart';
+import 'core/services/fcm_service.dart' show FCMService, initLocalNotifications;
 import 'core/auth/phone_entry_screen.dart';
 import 'core/auth/role_router.dart';
+import 'core/widgets/connectivity_wrapper.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:async';
 
@@ -13,6 +14,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   
+  // Initialize local notification display
+  await initLocalNotifications();
+
   // Initialize Push Notifications
   await FCMService().init();
   
@@ -74,7 +78,7 @@ class _PayRouteAppState extends State<PayRouteApp> {
               if (user == null || isOnboarding) {
                 return const PhoneEntryScreen();
               }
-              return RoleRouter(initialUri: _initialUri);
+              return ConnectivityWrapper(child: RoleRouter(initialUri: _initialUri));
             },
             loading: () => Scaffold(
               body: Container(

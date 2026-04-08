@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { auth, db } from "../services/firebaseAdmin";
+import { auth, db, fcm } from "../services/firebaseAdmin";
 
 export async function processBoarding(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     const authHeader = request.headers.get('authorization');
@@ -88,13 +88,37 @@ export async function processBoarding(request: HttpRequest, context: InvocationC
                 seatNumber: Math.floor(Math.random() * 40) + 1,
                 fareBaseCents: routeData.baseFareCents || 4500,
                 boardingStopName: boardingStopName,
-                tripId: tripRef.id
+                tripId: tripRef.id,
+                passengerId: tokenData.passengerId as string
             };
         });
 
-        return { status: 200, jsonBody: { success: true, ...result } };
+        // Send FCM notification to passenger (non-blocking)
+        _sendBoardingNotification(result.passengerId, result.boardingStopName, result.fareBaseCents).catch(() => {});
+
+        const { passengerId: _pid, ...responseData } = result;
+        return { status: 200, jsonBody: { success: true, ...responseData } };
     } catch (error: any) {
         context.error(error);
         return { status: 400, jsonBody: { error: error.message || 'Internal server error' } };
     }
+}
+
+async function _sendBoardingNotification(passengerId: string, boardingStop: string, fareCents: number): Promise<void> {
+    // Find userId from passenger record
+    const passSnap = await db.collection('passengers').where('passengerId', '==', passengerId).limit(1).get();
+    if (passSnap.empty) return;
+    const userId = passSnap.docs[0].data()?.userId as string | undefined;
+    if (!userId) return;
+    const userSnap = await db.collection('users').doc(userId).get();
+    const fcmToken = userSnap.data()?.fcmToken as string | undefined;
+    if (!fcmToken) return;
+    await fcm.send({
+        token: fcmToken,
+        notification: {
+            title: '🚌 You\'re on the bus!',
+            body: `Boarded at ${boardingStop}. Fare: LKR ${(fareCents / 100).toFixed(2)} (base).`,
+        },
+        data: { type: 'BOARDING' },
+    });
 }

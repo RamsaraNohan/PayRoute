@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { auth, db } from "../services/firebaseAdmin";
+import { auth, db, fcm } from "../services/firebaseAdmin";
 
 export async function signalDrop(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     const authHeader = request.headers.get('authorization');
@@ -79,12 +79,35 @@ export async function signalDrop(request: HttpRequest, context: InvocationContex
             const tokenRef = db.collection('tokens').doc(tripData.tokenId);
             t.update(tokenRef, { status: 'COMPLETED' });
 
-            return { finalFare: finalDeduction, distance: distanceKm };
+            return { finalFare: finalDeduction, distance: distanceKm, passengerId: tripData.passengerId as string };
         });
 
-        return { status: 200, jsonBody: { success: true, ...result } };
+        // Send FCM notification to passenger (non-blocking)
+        const { passengerId, ...responseData } = result;
+        _sendDropNotification(passengerId, result.finalFare).catch(() => {});
+
+        return { status: 200, jsonBody: { success: true, ...responseData } };
     } catch (error: any) {
         context.error(error);
         return { status: 400, jsonBody: { error: error.message || 'Internal server error' } };
     }
+}
+
+async function _sendDropNotification(passengerId: string, finalFare: number): Promise<void> {
+    // Find userId from passenger record
+    const passSnap = await db.collection('passengers').where('passengerId', '==', passengerId).limit(1).get();
+    if (passSnap.empty) return;
+    const userId = passSnap.docs[0].data()?.userId as string | undefined;
+    if (!userId) return;
+    const userSnap = await db.collection('users').doc(userId).get();
+    const fcmToken = userSnap.data()?.fcmToken as string | undefined;
+    if (!fcmToken) return;
+    await fcm.send({
+        token: fcmToken,
+        notification: {
+            title: '✅ Trip Completed',
+            body: `LKR ${(finalFare / 100).toFixed(2)} charged. Thank you for riding with PayRoute!`,
+        },
+        data: { type: 'TRIP_COMPLETED', fare: String(finalFare) },
+    });
 }

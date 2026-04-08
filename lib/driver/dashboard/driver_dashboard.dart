@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../crew/driver/driver_trip_screen.dart';
 
@@ -64,16 +65,15 @@ class DriverDashboard extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      decoration: AppTheme.glassCard(),
-                      child: const Center(
-                        child: Text(
-                          'No recent trips recorded.',
-                          style: TextStyle(color: Colors.white24),
-                        ),
-                      ),
-                    ),
+                    child: busId == null || busId == 'Pending Assignment'
+                        ? Container(
+                            width: double.infinity,
+                            decoration: AppTheme.glassCard(),
+                            child: const Center(
+                              child: Text('No shift history available.', style: TextStyle(color: Colors.white24)),
+                            ),
+                          )
+                        : _buildShiftHistory(busId),
                   ),
                 ],
               ),
@@ -81,6 +81,70 @@ class DriverDashboard extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildShiftHistory(String busId) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('trips')
+          .where('busId', isEqualTo: busId)
+          .where('status', isEqualTo: 'COMPLETED')
+          .orderBy('boardingTime', descending: true)
+          .limit(20)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator(color: Colors.white));
+        }
+        final docs = snapshot.data?.docs ?? [];
+        if (docs.isEmpty) {
+          return Container(
+            width: double.infinity,
+            decoration: AppTheme.glassCard(),
+            child: const Center(
+              child: Text('No recent trips recorded.', style: TextStyle(color: Colors.white24)),
+            ),
+          );
+        }
+        final currencyFormat = NumberFormat('#,##0.00', 'en_US');
+        return ListView.builder(
+          itemCount: docs.length,
+          itemBuilder: (context, i) {
+            final data = docs[i].data() as Map<String, dynamic>;
+            final fare = (data['finalFare'] as int?) ?? 0;
+            final rawTime = data['boardingTime'] as String?;
+            final dateStr = rawTime != null
+                ? DateFormat('MMM d, h:mm a').format(DateTime.parse(rawTime))
+                : '—';
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: AppTheme.glassCard(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data['boardingStopName'] ?? 'Trip',
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(dateStr, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+                    ],
+                  ),
+                  Text(
+                    'LKR ${currencyFormat.format(fare / 100)}',
+                    style: const TextStyle(color: AppTheme.purpleLight, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

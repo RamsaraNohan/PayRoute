@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
-import '../../providers/wallet_provider.dart';
+import '../../core/services/azure_functions_service.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
   const WalletScreen({super.key});
@@ -29,7 +30,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Enter amount to transfer from your bank account:', style: TextStyle(color: Colors.white70)),
+            const Text('Enter amount to top up via PayHere:', style: TextStyle(color: Colors.white70)),
             const SizedBox(height: 16),
             TextField(
               controller: controller,
@@ -48,30 +49,99 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
           ElevatedButton(
             onPressed: () {
               final val = double.tryParse(controller.text);
-              if (val != null && val > 0) {
+              if (val != null && val >= 100) {
                 Navigator.pop(context);
-                _topUp((val * 100).toInt());
+                _startPayHereCheckout((val * 100).toInt());
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Minimum top-up is LKR 100')),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.purpleLight,
               minimumSize: const Size(120, 40),
             ),
-            child: const Text('Transfer Now'),
+            child: const Text('Continue to Payment'),
           ),
         ],
       ),
     );
   }
 
-  void _topUp(int amountCents) async {
+  Future<void> _startPayHereCheckout(int amountCents) async {
     setState(() => _isLoading = true);
-    await ref.read(walletBalanceProvider.notifier).topUp(amountCents);
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Transferred LKR ${(amountCents / 100).toStringAsFixed(2)} successfully!')),
-    );
+
+    try {
+      final azureService = AzureFunctionsService();
+      final session = await azureService.createPaymentSession(amountCents: amountCents);
+
+      if (session == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not create payment session. Please try again.'), backgroundColor: Colors.red),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final paymentObject = {
+        "sandbox": session['isSandbox'] ?? true,
+        "merchant_id": session['merchantId'],
+        "notify_url": session['notifyUrl'],
+        "order_id": session['orderId'],
+        "items": "PayRoute Wallet Top-Up",
+        "amount": session['amountLKR'],
+        "currency": session['currency'] ?? 'LKR',
+        "first_name": session['firstName'] ?? 'Customer',
+        "last_name": session['lastName'] ?? '',
+        "email": "passenger@payroute.lk",
+        "phone": session['phone'] ?? '',
+        "address": "Sri Lanka",
+        "city": "Colombo",
+        "country": "Sri Lanka",
+        "hash": session['hash'],
+      };
+
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+
+      PayHere.startPayment(
+        paymentObject,
+        (paymentId) {
+          // Payment success — wallet will be credited via the payhereNotify webhook
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Payment successful! Wallet will be updated shortly.'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        },
+        (error) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment failed: $error'), backgroundColor: Colors.red),
+            );
+          }
+        },
+        () {
+          // Dismissed by user
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Payment cancelled.')),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    }
   }
 
   @override
@@ -133,11 +203,11 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                       ElevatedButton.icon(
                         onPressed: () => _showTopUpDialog(null),
                         style: AppTheme.primaryButton(),
-                        icon: const Icon(Icons.account_balance_outlined),
-                        label: const Text('Transfer from Bank', style: TextStyle(fontSize: 18)),
+                        icon: const Icon(Icons.payment),
+                        label: const Text('Top Up via PayHere', style: TextStyle(fontSize: 18)),
                       ),
                       const SizedBox(height: 12),
-                      const Center(child: Text('Secure transaction via PayRoute Gateway', style: TextStyle(color: Colors.white70, fontSize: 11))),
+                      const Center(child: Text('Secure payment via PayHere', style: TextStyle(color: Colors.white70, fontSize: 11))),
 
                       const SizedBox(height: 32),
                       const Text('Recent Trip Deductions', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),

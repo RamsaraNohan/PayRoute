@@ -1,6 +1,22 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
+/// Must be called once from main() before runApp().
+Future<void> initLocalNotifications() async {
+  const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const iosSettings = DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+  await _localNotifications.initialize(
+    const InitializationSettings(android: androidSettings, iOS: iosSettings),
+  );
+}
 
 class FCMService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -16,10 +32,34 @@ class FCMService {
       // Refresh token on rotation
       _messaging.onTokenRefresh.listen(_saveTokenToFirestore);
 
+      // Show a local notification banner when app is in foreground
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        // Handle foreground notifications (e.g. show local notification banner)
+        _showLocalNotification(message);
       });
     }
+  }
+
+  void _showLocalNotification(RemoteMessage message) {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    const androidDetails = AndroidNotificationDetails(
+      'payroute_channel',
+      'PayRoute',
+      channelDescription: 'PayRoute trip and payment notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+    const iosDetails = DarwinNotificationDetails(presentAlert: true, presentSound: true, presentBadge: true);
+    const details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+
+    _localNotifications.show(
+      message.hashCode,
+      notification.title ?? 'PayRoute',
+      notification.body,
+      details,
+    );
   }
 
   Future<void> _saveTokenToFirestore(String token) async {

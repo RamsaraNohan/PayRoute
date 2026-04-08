@@ -6,6 +6,8 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
 import '../complaint/complaint_screen.dart';
 import '../help/help_faq_screen.dart';
+import '../booking/my_bookings_screen.dart';
+import '../legal/privacy_policy_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -130,6 +132,17 @@ class ProfileScreen extends ConsumerWidget {
                 _infoTile(Icons.fingerprint, 'User ID', passenger.userId.substring(0, 12) + '...'),
 
                 const SizedBox(height: 24),
+                _sectionTitle('My Rides'),
+                _actionTile(
+                  context,
+                  Icons.calendar_month_outlined,
+                  'My Bookings',
+                  'View and manage advance seat reservations',
+                  Colors.tealAccent,
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyBookingsScreen())),
+                ),
+
+                const SizedBox(height: 24),
                 _sectionTitle('Support'),
                 _actionTile(
                   context,
@@ -146,6 +159,14 @@ class ProfileScreen extends ConsumerWidget {
                   'Get answers to common questions',
                   Colors.blueAccent,
                   () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpFaqScreen())),
+                ),
+                _actionTile(
+                  context,
+                  Icons.privacy_tip_outlined,
+                  'Privacy Policy & Terms',
+                  'Read our data and usage policies',
+                  Colors.white54,
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen())),
                 ),
 
                 const SizedBox(height: 24),
