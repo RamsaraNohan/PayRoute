@@ -77,15 +77,6 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
       final azureService = AzureFunctionsService();
       final session = await azureService.createPaymentSession(amountCents: amountCents);
 
-      if (session == null) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not create payment session. Please try again.'), backgroundColor: Colors.red),
-        );
-        setState(() => _isLoading = false);
-        return;
-      }
-
       final paymentObject = {
         "sandbox": session['isSandbox'] ?? true,
         "merchant_id": session['merchantId'],

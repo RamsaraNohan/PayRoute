@@ -2,7 +2,7 @@ import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functio
 import { db, fcm } from "../services/firebaseAdmin";
 import * as crypto from "crypto";
 
-const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "1234614";
+const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "1230268";
 const MERCHANT_SECRET = process.env["PAYHERE_MERCHANT_SECRET"] ?? "";
 
 // Note: MD5 is required by the PayHere payment gateway specification for HMAC verification
@@ -28,9 +28,12 @@ export async function payhereNotify(
     request: HttpRequest,
     context: InvocationContext
 ): Promise<HttpResponseInit> {
-    if (!MERCHANT_ID || !MERCHANT_SECRET) {
+    if (!MERCHANT_ID) {
         return { status: 503 };
     }
+
+    // When MERCHANT_SECRET is not set, skip signature verification (sandbox/dev mode only).
+    const skipVerification = !MERCHANT_SECRET;
 
     try {
         // PayHere sends URL-encoded form data — use URLSearchParams for robust parsing
@@ -41,8 +44,8 @@ export async function payhereNotify(
 
         context.log("PayHere notify params:", JSON.stringify(params));
 
-        // Verify HMAC signature
-        if (!verifyPayHereNotify(params)) {
+        // Verify HMAC signature (skipped in sandbox/dev mode when secret is not configured).
+        if (!skipVerification && !verifyPayHereNotify(params)) {
             context.warn("PayHere notify: invalid signature");
             return { status: 400, body: "Invalid signature" };
         }

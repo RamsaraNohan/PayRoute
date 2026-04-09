@@ -110,25 +110,29 @@ class AzureFunctionsService {
     }
   }
 
-  Future<Map<String, dynamic>?> createPaymentSession({required int amountCents}) async {
-    try {
-      final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
-      if (idToken == null) return null;
+  Future<Map<String, dynamic>> createPaymentSession({required int amountCents}) async {
+    final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+    if (idToken == null) throw Exception('Not signed in. Please log in and try again.');
 
-      final response = await http.post(
-        Uri.parse('$azureBaseUrl/createPaymentSession'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $idToken',
-        },
-        body: jsonEncode({'amountCents': amountCents}),
-      );
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
-      }
-      return null;
-    } catch (e) {
-      return null;
+    final response = await http.post(
+      Uri.parse('$azureBaseUrl/createPaymentSession'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken',
+      },
+      body: jsonEncode({'amountCents': amountCents}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
     }
+
+    // Propagate the server's error message so the UI can display it.
+    String serverError = 'Payment gateway error (HTTP ${response.statusCode})';
+    try {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      if (body['error'] != null) serverError = body['error'] as String;
+    } catch (_) {}
+    throw Exception(serverError);
   }
 }

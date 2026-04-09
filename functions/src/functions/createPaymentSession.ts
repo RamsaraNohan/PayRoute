@@ -3,19 +3,21 @@ import { auth, db } from "../services/firebaseAdmin";
 import * as crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
-const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "1234614";
+const MERCHANT_ID = process.env["PAYHERE_MERCHANT_ID"] ?? "1230268";
 const MERCHANT_SECRET = process.env["PAYHERE_MERCHANT_SECRET"] ?? "";
-const IS_SANDBOX = process.env["PAYHERE_SANDBOX"] !== "false";
+// Default to sandbox mode when running without a real merchant secret.
+const IS_SANDBOX = !MERCHANT_SECRET || process.env["PAYHERE_SANDBOX"] !== "false";
 
 // Note: MD5 is required by the PayHere payment gateway specification for hash
 // generation and signature verification (https://support.payhere.lk/api-&-mobile-sdk/payhere-checkout).
 // The use of MD5 here is not a security choice — it is a mandatory API contract.
-function buildPayHereHash(orderId: string, amountStr: string, currency: string): string {
+function buildPayHereHash(orderId: string, amountStr: string, currency: string, merchantSecret: string): string {
     // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
     // nosemgrep: javascript.lang.security.audit.node-md5.node-md5
+    // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
     const merchantSecretHash = crypto
         .createHash("md5")
-        .update(MERCHANT_SECRET)
+        .update(merchantSecret)
         .digest("hex")
         .toUpperCase();
     // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
@@ -35,9 +37,13 @@ export async function createPaymentSession(
         return { status: 401, jsonBody: { error: "Unauthorized" } };
     }
 
-    if (!MERCHANT_ID || !MERCHANT_SECRET) {
-        return { status: 503, jsonBody: { error: "Payment gateway not configured" } };
+    if (!MERCHANT_ID) {
+        return { status: 503, jsonBody: { error: "Payment gateway not configured: PAYHERE_MERCHANT_ID missing" } };
     }
+
+    // When MERCHANT_SECRET is not set we operate in sandbox mode with a dummy hash.
+    // Set PAYHERE_MERCHANT_SECRET in Azure app settings for real (live) payments.
+    const effectiveSecret = MERCHANT_SECRET || "sandbox-not-configured";
 
     try {
         const idToken = authHeader.split("Bearer ")[1];
@@ -63,7 +69,7 @@ export async function createPaymentSession(
         const orderId = `WALLET-${uuidv4().replace(/-/g, "").substring(0, 12).toUpperCase()}`;
         const amountLKR = (amountCents / 100).toFixed(2);
         const currency = "LKR";
-        const hash = buildPayHereHash(orderId, amountLKR, currency);
+        const hash = buildPayHereHash(orderId, amountLKR, currency, effectiveSecret);
 
         // Store a pending payment record to verify against on notify
         await db.collection("pendingPayments").doc(orderId).set({

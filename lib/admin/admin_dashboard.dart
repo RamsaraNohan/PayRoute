@@ -87,66 +87,109 @@ class _AdminStaffVerifTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildVerifList('drivers', 'New Driver Application');
-  }
-
-  Widget _buildVerifList(String collection, String title) {
+    // Show both drivers and conductors pending verification in a single scrollable list.
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection(collection)
+          .collection('drivers')
           .where('verificationStatus', isEqualTo: 'pending')
           .snapshots(),
-      builder: (context, snapshot) {
-        final docs = snapshot.data?.docs ?? [];
-        if (docs.isEmpty) return const Center(child: Text('No pending verifications.', style: TextStyle(color: Colors.white24)));
+      builder: (context, driverSnap) {
+        return StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('conductors')
+              .where('verificationStatus', isEqualTo: 'pending')
+              .snapshots(),
+          builder: (context, conductorSnap) {
+            final driverDocs = driverSnap.data?.docs ?? [];
+            final conductorDocs = conductorSnap.data?.docs ?? [];
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: docs.length,
-          itemBuilder: (context, i) {
-            final data = docs[i].data() as Map<String, dynamic>;
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+            if (driverDocs.isEmpty && conductorDocs.isEmpty) {
+              return const Center(
+                child: Text('No pending verifications.', style: TextStyle(color: Colors.white24)),
+              );
+            }
+
+            return ListView(
               padding: const EdgeInsets.all(16),
-              decoration: AppTheme.glassCard(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                   Row(
-                    children: [
-                      const Icon(Icons.badge, color: AppTheme.purpleLight),
-                      const SizedBox(width: 12),
-                      Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    ],
+              children: [
+                if (driverDocs.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Text('DRIVER APPLICATIONS',
+                        style: TextStyle(color: Colors.white38, fontSize: 11, letterSpacing: 1.2)),
                   ),
+                  ...driverDocs.map((doc) => _buildVerifCard(
+                    context, 'drivers', doc.id,
+                    doc.data() as Map<String, dynamic>,
+                    'Driver Application', Icons.drive_eta,
+                  )),
                   const SizedBox(height: 8),
-                  Text('User ID: ${data['userId']}', style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => _approve(context, collection, docs[i].id, false),
-                          style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.redAccent)),
-                          child: const Text('REJECT', style: TextStyle(color: Colors.redAccent)),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _approve(context, collection, docs[i].id, true),
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                          child: const Text('APPROVE'),
-                        ),
-                      ),
-                    ],
-                  )
                 ],
-              ),
+                if (conductorDocs.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Text('CONDUCTOR APPLICATIONS',
+                        style: TextStyle(color: Colors.white38, fontSize: 11, letterSpacing: 1.2)),
+                  ),
+                  ...conductorDocs.map((doc) => _buildVerifCard(
+                    context, 'conductors', doc.id,
+                    doc.data() as Map<String, dynamic>,
+                    'Conductor Application', Icons.badge,
+                  )),
+                ],
+              ],
             );
           },
         );
       },
+    );
+  }
+
+  Widget _buildVerifCard(BuildContext context, String collection, String docId,
+      Map<String, dynamic> data, String title, IconData icon) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: AppTheme.glassCard(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: AppTheme.purpleLight),
+              const SizedBox(width: 12),
+              Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text('Name: ${data['fullName'] ?? '—'}',
+              style: const TextStyle(color: Colors.white70, fontSize: 13)),
+          Text('NIC: ${data['nicNumber'] ?? '—'}',
+              style: const TextStyle(color: Colors.white54, fontSize: 12)),
+          Text('User ID: ${data['userId'] ?? '—'}',
+              style: const TextStyle(color: Colors.white38, fontSize: 11)),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => _approve(context, collection, docId, false),
+                  style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.redAccent)),
+                  child: const Text('REJECT', style: TextStyle(color: Colors.redAccent)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => _approve(context, collection, docId, true),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: const Text('APPROVE'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
