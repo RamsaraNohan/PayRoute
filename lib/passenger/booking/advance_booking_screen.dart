@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
+import '../../providers/passenger_provider.dart';
 
-class AdvanceBookingScreen extends StatefulWidget {
+class AdvanceBookingScreen extends ConsumerStatefulWidget {
   const AdvanceBookingScreen({super.key});
 
   @override
-  State<AdvanceBookingScreen> createState() => _AdvanceBookingScreenState();
+  ConsumerState<AdvanceBookingScreen> createState() => _AdvanceBookingScreenState();
 }
 
-class _AdvanceBookingScreenState extends State<AdvanceBookingScreen> {
+class _AdvanceBookingScreenState extends ConsumerState<AdvanceBookingScreen> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -71,14 +72,16 @@ class _AdvanceBookingScreenState extends State<AdvanceBookingScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+      // Use the real passenger doc ID (PAS-XXXX), not the Auth UID
+      final passenger = ref.read(passengerStreamProvider).value;
+      if (passenger == null) throw Exception('Passenger profile not found.');
       final dateTime = DateTime(
         _selectedDate!.year, _selectedDate!.month, _selectedDate!.day,
         _selectedTime!.hour, _selectedTime!.minute,
       );
 
       await FirebaseFirestore.instance.collection('bookings').add({
-        'passengerId': uid,
+        'passengerId': passenger.passengerId,
         'route': _selectedRoute,
         'scheduledTime': dateTime.toIso8601String(),
         'seatPreference': _selectedSeatPref,

@@ -11,99 +11,129 @@ class ConductorEarningsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final conductorId = FirebaseAuth.instance.currentUser?.uid ?? '';
     final today = DateTime.now();
-    final startOfDay = DateTime(today.year, today.month, today.day);
+    final startOfDay = Timestamp.fromDate(DateTime(today.year, today.month, today.day));
     final currency = NumberFormat('#,##0.00', 'en_US');
 
     return Container(
       decoration: AppTheme.gradientBackground(),
+      // Step 1: get conductor's assigned bus
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('trips')
-            .where('conductorId', isEqualTo: conductorId)
-            .where('boardingTime', isGreaterThanOrEqualTo: startOfDay.toIso8601String())
+            .collection('conductors')
+            .where('userId', isEqualTo: conductorId)
+            .limit(1)
             .snapshots(),
-        builder: (context, snapshot) {
-          final trips = snapshot.data?.docs ?? [];
-          final totalCents = trips.fold<int>(0, (sum, doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return sum + ((data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0);
-          });
+        builder: (context, conductorSnap) {
+          final conductorDocs = conductorSnap.data?.docs ?? [];
+          final busId = conductorDocs.isNotEmpty
+              ? (conductorDocs.first.data() as Map<String, dynamic>)['assignedBusId'] as String?
+              : null;
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: AppTheme.glassCard(),
-                child: Column(
-                  children: [
-                    const Text("Today's Earnings", style: TextStyle(color: Colors.white60)),
-                    const SizedBox(height: 12),
-                    Text(
-                      'LKR ${currency.format(totalCents / 100)}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${trips.length} trips completed',
-                      style: const TextStyle(color: AppTheme.purpleLight, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatCard('Avg Fare', 
-                      trips.isEmpty ? 'LKR 0.00' : 'LKR ${currency.format((totalCents / trips.length) / 100)}',
-                      Icons.trending_up),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatCard('Passengers', '${trips.length}', Icons.people),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text('Trip History Today', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              ...trips.map((doc) {
+          if (busId == null || busId == 'Pending Assignment') {
+            return const Center(
+              child: Text('Not assigned to a bus yet.', style: TextStyle(color: Colors.white54)),
+            );
+          }
+
+          // Step 2: get today's completed trips for that bus
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('passengerTrips')
+                .where('busId', isEqualTo: busId)
+                .where('status', isEqualTo: 'COMPLETED')
+                .where('boardedAt', isGreaterThanOrEqualTo: startOfDay)
+                .snapshots(),
+            builder: (context, snapshot) {
+              final trips = snapshot.data?.docs ?? [];
+              final totalCents = trips.fold<int>(0, (sum, doc) {
                 final data = doc.data() as Map<String, dynamic>;
-                final time = data['boardingTime'] != null
-                    ? DateFormat('hh:mm a').format(DateTime.parse(data['boardingTime']))
-                    : '—';
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.all(14),
-                  decoration: AppTheme.glassCard(),
-                  child: Row(
+                return sum + ((data['fareCents'] as int?) ?? 0);
+              });
+
+              return ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: AppTheme.glassCard(),
+                    child: Column(
+                      children: [
+                        const Text("Today's Earnings", style: TextStyle(color: Colors.white60)),
+                        const SizedBox(height: 12),
+                        Text(
+                          'LKR ${currency.format(totalCents / 100)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${trips.length} trips completed',
+                          style: const TextStyle(color: AppTheme.purpleLight, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
                     children: [
-                      const Icon(Icons.directions_bus, color: AppTheme.purpleLight),
-                      const SizedBox(width: 12),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('To: ${data['destinationStopId'] ?? 'Unknown'}',
-                                style: const TextStyle(color: Colors.white)),
-                            Text(time, style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                          ],
+                        child: _buildStatCard(
+                          'Avg Fare',
+                          trips.isEmpty
+                              ? 'LKR 0.00'
+                              : 'LKR ${currency.format((totalCents / trips.length) / 100)}',
+                          Icons.trending_up,
                         ),
                       ),
-                      Text(
-                        'LKR ${currency.format(((data['finalFare'] as int?) ?? (data['fareCents'] as int?) ?? 0) / 100)}',
-                        style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildStatCard('Passengers', '${trips.length}', Icons.people),
                       ),
                     ],
                   ),
-                );
-              }),
-            ],
+                  const SizedBox(height: 20),
+                  const Text('Trip History Today',
+                      style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  ...trips.map((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    final boardedAtTs = data['boardedAt'] as Timestamp?;
+                    final time = boardedAtTs != null
+                        ? DateFormat('hh:mm a').format(boardedAtTs.toDate())
+                        : '—';
+                    final fareCents = (data['fareCents'] as int?) ?? 0;
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(14),
+                      decoration: AppTheme.glassCard(),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.directions_bus, color: AppTheme.purpleLight),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Bus: ${data['busId'] ?? '—'}',
+                                    style: const TextStyle(color: Colors.white)),
+                                Text(time, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            'LKR ${currency.format(fareCents / 100)}',
+                            style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              );
+            },
           );
         },
       ),

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
+import '../../providers/passenger_provider.dart';
 
-class MyBookingsScreen extends StatelessWidget {
+class MyBookingsScreen extends ConsumerWidget {
   const MyBookingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+  Widget build(BuildContext context, WidgetRef ref) {
+    final passengerAsync = ref.watch(passengerStreamProvider);
+    final passengerId = passengerAsync.value?.passengerId ?? '';
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
@@ -20,14 +22,16 @@ class MyBookingsScreen extends StatelessWidget {
       ),
       body: Container(
         decoration: AppTheme.gradientBackground(),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('bookings')
-              .where('passengerId', isEqualTo: uid)
-              .orderBy('createdAt', descending: true)
-              .limit(50)
-              .snapshots(),
-          builder: (context, snapshot) {
+        child: passengerId.isEmpty
+            ? const Center(child: CircularProgressIndicator(color: AppTheme.purpleLight))
+            : StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('bookings')
+                    .where('passengerId', isEqualTo: passengerId)
+                    .orderBy('createdAt', descending: true)
+                    .limit(50)
+                    .snapshots(),
+                builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator(color: AppTheme.purpleLight));
             }

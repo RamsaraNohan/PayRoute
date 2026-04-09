@@ -33,9 +33,9 @@ class ConductorPassengersScreen extends StatelessWidget {
 
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('trips')
+                .collection('passengerTrips')
                 .where('busId', isEqualTo: assignedBusId)
-                .where('status', isEqualTo: 'ONGOING')
+                .where('status', isEqualTo: 'BOARDED')
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -169,17 +169,19 @@ class _ManualCheckoutButtonState extends State<_ManualCheckoutButton> {
 
     try {
       await FirebaseFirestore.instance.runTransaction((t) async {
-        final tripRef = FirebaseFirestore.instance.collection('trips').doc(widget.tripId);
+        // passengerTrips uses the doc id as the trip record
+        final tripRef = FirebaseFirestore.instance.collection('passengerTrips').doc(widget.tripId);
         final tripSnap = await t.get(tripRef);
         if (!tripSnap.exists) throw Exception('Trip not found');
         final tripData = tripSnap.data()!;
-        if (tripData['status'] != 'ONGOING') throw Exception('Trip already completed');
+        if (tripData['status'] != 'BOARDED') throw Exception('Trip already completed');
 
-        final baseFare = (tripData['fareBase'] as int?) ?? 4500;
-        final companions = (tripData['companionCount'] as int?) ?? 1;
-        final finalDeduction = baseFare * companions;
+        // Base fare: 45.00 LKR (4500 cents); companions not stored in passengerTrips
+        const int finalDeduction = 4500;
 
-        final passengerRef = FirebaseFirestore.instance.collection('passengers').doc(tripData['passengerId'] as String);
+        final passengerRef = FirebaseFirestore.instance
+            .collection('passengers')
+            .doc(tripData['passengerId'] as String);
         final passSnap = await t.get(passengerRef);
         if (!passSnap.exists) throw Exception('Passenger not found');
         final currentBalance = (passSnap.data()!['walletBalance'] as int?) ?? 0;
@@ -187,9 +189,10 @@ class _ManualCheckoutButtonState extends State<_ManualCheckoutButton> {
 
         t.update(passengerRef, {'walletBalance': currentBalance - finalDeduction});
         t.update(tripRef, {
+          'exitLocation': tripData['entryLocation'], // same stop = base fare only
+          'droppedAt': FieldValue.serverTimestamp(),
+          'fareCents': finalDeduction,
           'status': 'COMPLETED',
-          'dropTime': DateTime.now().toIso8601String(),
-          'finalFare': finalDeduction,
           'manualCheckout': true,
         });
       });
