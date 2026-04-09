@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,7 +43,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                   final balanceStr = currencyFormat.format(passenger.walletBalance / 100);
 
                   return ListView(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
                     children: [
                       _buildHeader(passenger),
                       const SizedBox(height: 24),
@@ -50,61 +51,13 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
                       // LIVE TRIP HUD
                       _buildActiveTripHUD(context, ref),
                       
-                      const SizedBox(height: 16),
-                      // Wallet Card
-                      Container(
-                        decoration: AppTheme.glassCard(),
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('Wallet Balance', style: TextStyle(color: Colors.white60, fontSize: 12)),
-                            const SizedBox(height: 8),
-                            Text('LKR $balanceStr',
-                                style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Updated: ${DateFormat("hh:mm a").format(DateTime.now())}',
-                                    style: const TextStyle(color: Colors.white70, fontSize: 11)),
-                                ElevatedButton(
-                                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen())),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: AppTheme.purplePrimary,
-                                    shape: const StadiumBorder(),
-                                    minimumSize: const Size(100, 36),
-                                  ),
-                                  child: const Text('Top Up'),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                      // Wallet Card (glass + glow)
+                      _buildWalletCard(context, passenger, currencyFormat, balanceStr),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 28),
 
-                      // Quick Actions Grid
-                      GridView.count(
-                        crossAxisCount: 2,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 1.5,
-                        children: [
-                          _buildQuickAction(context, Icons.calendar_month, 'Book Ride',
-                              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdvanceBookingScreen()))),
-                          _buildQuickAction(context, Icons.history, 'My Trips',
-                              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TripHistoryScreen()))),
-                          _buildQuickAction(context, Icons.qr_code_scanner, 'Check In', 
-                              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CheckInScreen()))),
-                          _buildQuickAction(context, Icons.account_balance_wallet, 'Wallet',
-                              () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen()))),
-                        ],
-                      ),
+                      // Quick Actions
+                      _buildQuickActionsSection(context),
 
                       const SizedBox(height: 32),
                       const Text('Recent Activity',
@@ -125,7 +78,214 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
     );
   }
 
-  Widget _buildHeader(dynamic passenger) {
+  Widget _buildWalletCard(BuildContext context, dynamic passenger,
+      NumberFormat currencyFormat, String balanceStr) {
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen())),
+      child: Container(
+        margin: const EdgeInsets.only(top: 4),
+        child: Stack(
+          children: [
+            // Glow layer
+            Container(
+              height: 130,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.purpleLight.withValues(alpha: 0.35),
+                    blurRadius: 40,
+                    spreadRadius: 4,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                child: Container(
+                  padding: const EdgeInsets.all(22),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppTheme.purplePrimary.withValues(alpha: 0.6),
+                        AppTheme.purpleDim.withValues(alpha: 0.5),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: const Color(0x55FFFFFF), width: 0.8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.account_balance_wallet_rounded,
+                              color: Colors.white70, size: 16),
+                          const SizedBox(width: 6),
+                          const Text('WALLET BALANCE',
+                              style: TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 11,
+                                  letterSpacing: 1.2,
+                                  fontWeight: FontWeight.w600)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.white24),
+                            ),
+                            child: const Text('Top Up',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'LKR $balanceStr',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Updated: ${DateFormat("hh:mm a").format(DateTime.now())}',
+                        style: const TextStyle(color: Colors.white38, fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionsSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Quick Actions',
+            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildQuickActionCard(
+                context,
+                icon: Icons.qr_code_scanner,
+                label: 'Check In',
+                sublabel: 'Scan & board',
+                color: AppTheme.purpleLight,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CheckInScreen())),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildQuickActionCard(
+                context,
+                icon: Icons.calendar_month_rounded,
+                label: 'Book Ride',
+                sublabel: 'Advance seat',
+                color: AppTheme.cyanAccent,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdvanceBookingScreen())),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildQuickActionCard(
+                context,
+                icon: Icons.history_rounded,
+                label: 'My Trips',
+                sublabel: 'Past journeys',
+                color: AppTheme.greenAccent,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TripHistoryScreen())),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildQuickActionCard(
+                context,
+                icon: Icons.account_balance_wallet_rounded,
+                label: 'Wallet',
+                sublabel: 'Top up balance',
+                color: Colors.amberAccent,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen())),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionCard(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String sublabel,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: const Color(0x14FFFFFF),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0x33FFFFFF), width: 0.8),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color, size: 22),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label,
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),
+                    Text(sublabel,
+                        style: const TextStyle(color: Colors.white38, fontSize: 10)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -222,23 +382,6 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
       },
       loading: () => const SizedBox(),
       error: (_, __) => const SizedBox(),
-    );
-  }
-
-  Widget _buildQuickAction(BuildContext context, IconData icon, String title, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: AppTheme.glassCard(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: AppTheme.purpleLight, size: 32),
-            const SizedBox(height: 8),
-            Text(title, style: const TextStyle(color: Colors.white, fontSize: 14)),
-          ],
-        ),
-      ),
     );
   }
 
@@ -341,4 +484,4 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
       },
     );
   }
-}
+
