@@ -5,10 +5,13 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'core/config/mapbox_config.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
-import 'core/services/fcm_service.dart' show FCMService, initLocalNotifications;
+import 'core/services/fcm_service.dart' show FCMService, initLocalNotifications, payRouteNavigatorKey;
 import 'core/auth/phone_entry_screen.dart';
 import 'core/auth/role_router.dart';
 import 'core/widgets/connectivity_wrapper.dart';
+import 'passenger/history/trip_history_screen.dart';
+import 'passenger/wallet/wallet_screen.dart';
+import 'passenger/home/passenger_dashboard.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:async';
 
@@ -21,18 +24,9 @@ void main() async {
   // Initialize local notification display
   await initLocalNotifications();
 
-  // Initialize Push Notifications
+  // Initialize Push Notifications (also wires onMessageOpenedApp / getInitialMessage)
   await FCMService().init();
   
-  // await SentryFlutter.init(
-  //   (options) {
-  //     options.dsn = 'YOUR_SENTRY_DSN_HERE';
-  //     options.tracesSampleRate = 1.0;
-  //   },
-  //   appRunner: () => runApp(
-  //     const ProviderScope(child: PayRouteApp()),
-  //   ),
-  // );
   runApp(const ProviderScope(child: PayRouteApp()));
 }
 
@@ -77,6 +71,14 @@ class _PayRouteAppState extends State<PayRouteApp> {
         return MaterialApp(
           title: 'PayRoute',
           theme: AppTheme.themeData,
+          // Navigator key enables FCMService to push routes without a BuildContext
+          navigatorKey: payRouteNavigatorKey,
+          // Named routes used by FCM deep-link handler
+          routes: {
+            '/home': (_) => const PassengerDashboard(),
+            '/trip-history': (_) => const TripHistoryScreen(),
+            '/wallet': (_) => const WalletScreen(),
+          },
           home: authState.when(
             data: (user) {
               if (user == null || isOnboarding) {
@@ -97,5 +99,4 @@ class _PayRouteAppState extends State<PayRouteApp> {
     );
   }
 }
-
 

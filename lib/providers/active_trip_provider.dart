@@ -1,29 +1,22 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'passenger_provider.dart';
 
 part 'active_trip_provider.g.dart';
 
 @riverpod
 Stream<Map<String, dynamic>?> currentActiveTrip(CurrentActiveTripRef ref) {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return Stream.value(null);
+  // Watch the passenger profile — this is already live, no asyncMap needed
+  final passengerAsync = ref.watch(passengerStreamProvider);
+  final passenger = passengerAsync.value;
+  if (passenger == null) return Stream.value(null);
 
+  // Live snapshot so the HUD disappears the instant the trip is COMPLETED
   return FirebaseFirestore.instance
-      .collection('passengers')
-      .where('userId', isEqualTo: user.uid)
+      .collection('passengerTrips')
+      .where('passengerId', isEqualTo: passenger.passengerId)
+      .where('status', isEqualTo: 'BOARDED')
+      .limit(1)
       .snapshots()
-      .asyncMap((snap) async {
-        if (snap.docs.isEmpty) return null;
-        final pId = snap.docs.first.id;
-
-        final tripSnap = await FirebaseFirestore.instance
-            .collection('passengerTrips')
-            .where('passengerId', isEqualTo: pId)
-            .where('status', isEqualTo: 'BOARDED')
-            .limit(1)
-            .get();
-
-        return tripSnap.docs.isNotEmpty ? tripSnap.docs.first.data() : null;
-      });
+      .map((snap) => snap.docs.isNotEmpty ? snap.docs.first.data() : null);
 }

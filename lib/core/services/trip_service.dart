@@ -49,6 +49,14 @@ class TripService {
     });
   }
 
+  /// Marks an active trip session as COMPLETED (called by conductor).
+  static Future<void> endTrip({required String tripId}) async {
+    await _db.collection('activeTrips').doc(tripId).update({
+      'status': 'COMPLETED',
+      'endTime': FieldValue.serverTimestamp(),
+    });
+  }
+
   /// Handles passenger dropping (Check-Out) and financial transaction.
   static Future<void> processDropping({
     required String tripId,

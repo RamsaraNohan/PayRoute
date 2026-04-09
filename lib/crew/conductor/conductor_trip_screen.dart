@@ -47,7 +47,36 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
           _tripStarted = true;
         });
       } else {
-        // Logic for ending trip can be added here
+        // Confirm before ending the trip
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (_) => AlertDialog(
+            backgroundColor: AppTheme.backgroundDark,
+            title: const Text('End Trip Session?', style: TextStyle(color: Colors.white)),
+            content: const Text(
+              'This will close the active trip. Passengers still on board will not be able to scan the QR after this.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                child: const Text('End Trip'),
+              ),
+            ],
+          ),
+        );
+        if (confirmed != true) {
+          setState(() => _isLoading = false);
+          return;
+        }
+        if (_tripId != null) {
+          await TripService.endTrip(tripId: _tripId!);
+        }
         setState(() {
           _tripStarted = false;
           _tripId = null;
