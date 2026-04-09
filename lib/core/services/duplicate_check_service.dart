@@ -32,7 +32,7 @@ class DuplicateCheckService {
   static Future<bool> isVehicleRegistered(String vehicleNumber) async {
     final query = await FirebaseFirestore.instance
         .collection('buses')
-        .where('vehicleNumber', isEqualTo: vehicleNumber.trim().toUpperCase())
+        .where('registrationNumber', isEqualTo: vehicleNumber.trim().toUpperCase())
         .limit(1)
         .get();
     return query.docs.isNotEmpty;

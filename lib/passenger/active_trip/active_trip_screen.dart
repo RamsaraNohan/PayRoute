@@ -23,8 +23,6 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
   String _busRegistration = 'Your Bus';
   Position? _initialPos;
 
-  bool _mapReady = false;
-
   @override
   void initState() {
     super.initState();

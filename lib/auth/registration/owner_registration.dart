@@ -163,7 +163,8 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
         busDocs.add({
           'busId': busId,
           'registrationNumber': b.regNoController.text.trim().toUpperCase(),
-          'ownerId': ownerId,
+          'ownerId': ownerId,        // OWN-XXXXXXXX — used by TripService wallet lookup
+          'ownerUserId': user.uid,   // Firebase Auth UID — used by OwnerDashboard queries
           'capacity': int.tryParse(b.capacityController.text) ?? 54,
           'routeId': b.routeController.text.trim(),
           'status': 'offline',

@@ -20,7 +20,6 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
   late final MobileScannerController _scannerController;
   bool _isScanning = true;
   bool _processing = false;
-  final int _companions = 0;
   bool _nfcMode = false;
   bool _nfcSupported = false;
   bool _nfcListening = false;
@@ -364,7 +363,7 @@ class _ScannerLineAnimationState extends State<_ScannerLineAnimation> with Singl
   }
 
   @override
-  dispose() {
+  void dispose() {
     _controller.dispose();
     super.dispose();
   }

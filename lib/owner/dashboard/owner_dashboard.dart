@@ -105,10 +105,10 @@ class _OwnerAnalyticsTab extends StatelessWidget {
       decoration: AppTheme.gradientBackground(),
       child: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
-          // Step 1: get owner's buses
+          // Step 1: get owner's buses (ownerUserId = Firebase Auth UID)
           stream: FirebaseFirestore.instance
               .collection('buses')
-              .where('ownerId', isEqualTo: user?.uid)
+              .where('ownerUserId', isEqualTo: user?.uid)
               .snapshots(),
           builder: (context, busSnap) {
             final busIds = busSnap.data?.docs.map((d) => d.id).toList() ?? [];
@@ -295,7 +295,7 @@ class _OwnerFleetTabState extends State<_OwnerFleetTab> {
             ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('buses').where('ownerId', isEqualTo: user?.uid).snapshots(),
+                stream: FirebaseFirestore.instance.collection('buses').where('ownerUserId', isEqualTo: user?.uid).snapshots(),
                 builder: (context, snapshot) {
                   final buses = snapshot.data?.docs ?? [];
                   if (buses.isEmpty) {
@@ -388,13 +388,22 @@ class _BusEditFormState extends State<_BusEditForm> {
     final db = FirebaseFirestore.instance;
 
     try {
+      // Look up the OWN-XXXXXXXX owner doc ID (needed by TripService for wallet credits)
+      final ownerQuery = await db
+          .collection('owners')
+          .where('userId', isEqualTo: user?.uid)
+          .limit(1)
+          .get();
+      final ownerDocId = ownerQuery.docs.isNotEmpty ? ownerQuery.docs.first.id : (user?.uid ?? 'unknown');
+
       if (widget.bus == null) {
         // ADD NEW BUS
         final busId = IdGenerator.generate('BUS');
         await db.collection('buses').doc(busId).set({
           'busId': busId,
           'registrationNumber': _regController.text.trim().toUpperCase(),
-          'ownerId': user?.uid,
+          'ownerId': ownerDocId,     // OWN-XXXXXXXX — used by TripService wallet lookup
+          'ownerUserId': user?.uid,  // Firebase Auth UID — used by OwnerDashboard queries
           'capacity': int.tryParse(_capController.text) ?? 54,
           'routeId': _routeController.text.trim(),
           'status': 'offline',
@@ -407,7 +416,7 @@ class _BusEditFormState extends State<_BusEditForm> {
         // EDIT REQUEST logic
         await db.collection('busEditRequests').add({
           'busId': widget.bus!.busId,
-          'ownerId': user?.uid,
+          'ownerId': ownerDocId,
           'registrationNumber': _regController.text.trim().toUpperCase(),
           'capacity': int.tryParse(_capController.text) ?? 54,
           'routeId': _routeController.text.trim(),

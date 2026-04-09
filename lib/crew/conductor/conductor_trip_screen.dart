@@ -259,7 +259,7 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Trip ID: ${_tripId?.substring(_tripId!.length - 8)}',
+          'Trip ID: ...${_tripId != null && _tripId!.length > 8 ? _tripId!.substring(_tripId!.length - 8) : (_tripId ?? '—')}',
           style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),

@@ -23,8 +23,6 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   // Cache the last known position so we can draw the marker once the map is ready
   Position? _lastKnownPos;
 
-  bool _mapReady = false;
-
   @override
   void initState() {
     super.initState();
