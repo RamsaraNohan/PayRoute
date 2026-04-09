@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:ui';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
@@ -151,10 +152,16 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Wallet', style: TextStyle(color: Colors.white)),
+        title: const Text('Wallet', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.transparent),
+          ),
+        ),
       ),
       body: Container(
         width: double.infinity,
@@ -169,33 +176,111 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
               return Stack(
                 children: [
                   ListView(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
                     children: [
-                      Container(
-                        decoration: AppTheme.glassCard(),
-                        padding: const EdgeInsets.all(32),
-                        child: Column(
+                      // Glowing balance card
+                      GestureDetector(
+                        onTap: () => _showTopUpDialog(null),
+                        child: Stack(
                           children: [
-                            const Text('Available Balance', style: TextStyle(color: Colors.white60, fontSize: 16)),
-                            const SizedBox(height: 12),
-                            Text('LKR $balanceStr', style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 16),
-                            Text('Updated: ${DateFormat("hh:mm a").format(DateTime.now())}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                            Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppTheme.purpleLight.withValues(alpha: 0.4),
+                                    blurRadius: 44,
+                                    spreadRadius: 4,
+                                    offset: const Offset(0, 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                child: Container(
+                                  padding: const EdgeInsets.all(28),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppTheme.purplePrimary.withValues(alpha: 0.65),
+                                        AppTheme.purpleDim.withValues(alpha: 0.5),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(24),
+                                    border: Border.all(color: const Color(0x55FFFFFF), width: 0.8),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.account_balance_wallet_rounded,
+                                              color: Colors.white70, size: 16),
+                                          const SizedBox(width: 6),
+                                          const Text('AVAILABLE BALANCE',
+                                              style: TextStyle(
+                                                  color: Colors.white60,
+                                                  fontSize: 11,
+                                                  letterSpacing: 1.2,
+                                                  fontWeight: FontWeight.w600)),
+                                          const Spacer(),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(alpha: 0.15),
+                                              borderRadius: BorderRadius.circular(20),
+                                              border: Border.all(color: Colors.white24),
+                                            ),
+                                            child: const Text('Tap to Top Up',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w700)),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'LKR $balanceStr',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 34,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: -0.5),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        'Updated: ${DateFormat("hh:mm a").format(DateTime.now())}',
+                                        style: const TextStyle(color: Colors.white38, fontSize: 11),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 32),
-                      const Text('Quick Top Up', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      const Text('Quick Top Up',
+                          style: TextStyle(
+                              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 16),
-                      
                       Wrap(
                         spacing: 12,
                         runSpacing: 12,
                         children: [
-                          _buildAmountChip(10000), // LKR 100
-                          _buildAmountChip(50000), // LKR 500
-                          _buildAmountChip(100000), // LKR 1000
-                          _buildAmountChip(200000), // LKR 2000
+                          _buildAmountChip(10000),
+                          _buildAmountChip(50000),
+                          _buildAmountChip(100000),
+                          _buildAmountChip(200000),
                         ],
                       ),
                       const SizedBox(height: 32),

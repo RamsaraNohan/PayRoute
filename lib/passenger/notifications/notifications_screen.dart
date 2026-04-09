@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,13 +28,21 @@ class NotificationsScreen extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
         title: const Text('Notifications'),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.transparent),
+          ),
+        ),
       ),
       body: Container(
+        width: double.infinity,
         decoration: AppTheme.gradientBackground(),
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -65,7 +74,7 @@ class NotificationsScreen extends StatelessWidget {
             }
 
             return ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 80, 16, 24),
               itemCount: docs.length,
               itemBuilder: (context, i) {
                 final data = docs[i].data() as Map<String, dynamic>;

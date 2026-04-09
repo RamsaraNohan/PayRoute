@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,18 +33,62 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
+      extendBody: true,
       body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        backgroundColor: AppTheme.backgroundDark,
-        selectedItemColor: AppTheme.purpleLight,
-        unselectedItemColor: Colors.white38,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.analytics_outlined), label: 'Analytics'),
-          BottomNavigationBarItem(icon: Icon(Icons.directions_bus_filled_outlined), label: 'Fleet'),
-          BottomNavigationBarItem(icon: Icon(Icons.badge_outlined), label: 'Staff'),
-        ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: Container(
+              height: 64,
+              decoration: BoxDecoration(
+                color: const Color(0x33FFFFFF),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: const Color(0x44FFFFFF), width: 0.8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _ownerNavItem(0, Icons.analytics_outlined, Icons.analytics_rounded, 'Analytics'),
+                  _ownerNavItem(1, Icons.directions_bus_outlined, Icons.directions_bus_rounded, 'Fleet'),
+                  _ownerNavItem(2, Icons.badge_outlined, Icons.badge_rounded, 'Staff'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _ownerNavItem(int index, IconData icon, IconData activeIcon, String label) {
+    final selected = _currentIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _currentIndex = index),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: 80,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              selected ? activeIcon : icon,
+              color: selected ? AppTheme.purpleLight : Colors.white54,
+              size: 22,
+            ),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? AppTheme.purpleLight : Colors.white38,
+                fontSize: 10,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
