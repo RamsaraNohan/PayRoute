@@ -1,0 +1,242 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram name="Fig 3.1 - Use Case Diagram" id="uc_diagram">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ============================================================ -->
+        <!-- TITLE                                                         -->
+        <!-- ============================================================ -->
+        <mxCell id="title" value="Figure 3.1 — Use Case Diagram : PayRoute System"
+          style="text;html=1;align=center;verticalAlign=middle;resizable=0;strokeColor=none;fillColor=none;fontSize=17;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="150" y="8" width="1100" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- SYSTEM BOUNDARY                                               -->
+        <!-- ============================================================ -->
+        <mxCell id="sb" value="&lt;b style=&apos;font-size:14px&apos;&gt;« system »   PayRoute&lt;/b&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#23445D;strokeWidth=2;dashed=1;dashPattern=8 4;verticalAlign=top;spacingTop=8;fontSize=14;"
+          vertex="1" parent="1">
+          <mxGeometry x="185" y="58" width="995" height="950" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- ACTORS                                                        -->
+        <!-- ============================================================ -->
+
+        <!-- Passenger – left, vertically centred -->
+        <mxCell id="ap" value="Passenger"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="265" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Admin – left, lower half -->
+        <mxCell id="aa" value="Admin"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="690" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Conductor – right, upper half -->
+        <mxCell id="ac" value="Conductor"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="1270" y="175" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Bus Owner – right, lower half -->
+        <mxCell id="ao" value="Bus Owner"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="1270" y="540" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- USE CASES – LEFT COLUMN (Passenger)  x=215                  -->
+        <!-- ============================================================ -->
+        <mxCell id="uc1" value="Register / Login"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="88" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc2" value="Generate Boarding Token"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="183" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc3" value="Top Up Wallet"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="278" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc4" value="Signal Drop (Alight)"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="373" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc5" value="View Trip History"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="468" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc6" value="View Wallet Balance"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="563" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- USE CASES – MIDDLE COLUMN (Admin)  x=565                    -->
+        <!-- ============================================================ -->
+        <mxCell id="uc7" value="Manage Users"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="565" y="108" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc8" value="Manage Routes"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="565" y="210" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc9" value="Manage Buses"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="565" y="312" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc10" value="View Audit Logs"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="565" y="414" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc11" value="Approve Conductor Registration"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="555" y="516" width="195" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc12" value="View System Reports"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="565" y="618" width="175" height="52" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- USE CASES – RIGHT COLUMN (Conductor / Bus Owner)  x=915     -->
+        <!-- ============================================================ -->
+        <mxCell id="uc13" value="Process Boarding&#xa;(Scan QR Token)"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="910" y="108" width="205" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc14" value="View Active Trip"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="910" y="228" width="205" height="52" as="geometry"/>
+        </mxCell>
+
+        <!-- divider label between conductor / owner UCs -->
+        <mxCell id="div_label" value=""
+          style="line;strokeColor=#23445D;strokeWidth=1;dashed=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="895" y="408" width="235" height="10" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc15" value="Register Bus"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="910" y="528" width="205" height="52" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc16" value="View Revenue Report"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="910" y="630" width="205" height="52" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- INCLUDE USE CASES  (bottom of boundary)                      -->
+        <!-- ============================================================ -->
+        <mxCell id="uc17" value="Create Payment&#xa;Session (PayHere)"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="385" y="835" width="205" height="62" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc18" value="Calculate &amp;&#xa;Deduct Fare"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="685" y="835" width="205" height="62" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- ASSOCIATIONS  (no arrowhead — plain lines)                   -->
+        <!-- ============================================================ -->
+
+        <!-- Passenger -->
+        <mxCell id="ep1" style="endArrow=none;html=1;" edge="1" source="ap" target="uc1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ep2" style="endArrow=none;html=1;" edge="1" source="ap" target="uc2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ep3" style="endArrow=none;html=1;" edge="1" source="ap" target="uc3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ep4" style="endArrow=none;html=1;" edge="1" source="ap" target="uc4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ep5" style="endArrow=none;html=1;" edge="1" source="ap" target="uc5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ep6" style="endArrow=none;html=1;" edge="1" source="ap" target="uc6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Admin -->
+        <mxCell id="ea1" style="endArrow=none;html=1;" edge="1" source="aa" target="uc7"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea2" style="endArrow=none;html=1;" edge="1" source="aa" target="uc8"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea3" style="endArrow=none;html=1;" edge="1" source="aa" target="uc9"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea4" style="endArrow=none;html=1;" edge="1" source="aa" target="uc10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea5" style="endArrow=none;html=1;" edge="1" source="aa" target="uc11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea6" style="endArrow=none;html=1;" edge="1" source="aa" target="uc12" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Conductor -->
+        <mxCell id="ec1" style="endArrow=none;html=1;" edge="1" source="ac" target="uc13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ec2" style="endArrow=none;html=1;" edge="1" source="ac" target="uc14" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Bus Owner -->
+        <mxCell id="eo1" style="endArrow=none;html=1;" edge="1" source="ao" target="uc15" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="eo2" style="endArrow=none;html=1;" edge="1" source="ao" target="uc16" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ============================================================ -->
+        <!-- «include» RELATIONSHIPS  (dashed open arrow)                 -->
+        <!-- ============================================================ -->
+
+        <!-- Top Up Wallet  «include»  Create Payment Session -->
+        <mxCell id="inc1" value="«include»"
+          style="dashed=1;endArrow=open;endFill=0;startArrow=none;startFill=0;html=1;fontSize=10;align=center;"
+          edge="1" source="uc3" target="uc17" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Signal Drop   «include»  Calculate & Deduct Fare -->
+        <mxCell id="inc2" value="«include»"
+          style="dashed=1;endArrow=open;endFill=0;startArrow=none;startFill=0;html=1;fontSize=10;align=center;"
+          edge="1" source="uc4" target="uc18" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Process Boarding  «include»  Send Boarding Notification (note only) -->
+        <!-- UC13 also triggers FCM — shown as a note box below -->
+        <mxCell id="note1" value="Note: All actors must authenticate via Firebase Auth (Register / Login) before accessing any use case."
+          style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontSize=10;fontStyle=2;fillColor=#fffacd;strokeColor=#888888;align=left;spacingLeft=6;size=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="215" y="660" width="300" height="50" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

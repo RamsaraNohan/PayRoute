@@ -1,0 +1,642 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram name="Fig 3.3 - ER Diagram" id="er_diagram">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="860" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ============================================================ -->
+        <!-- TITLE                                                         -->
+        <!-- ============================================================ -->
+        <mxCell id="title" value="Figure 3.3 — Entity-Relationship Diagram : PayRoute System  (Crow&apos;s Foot / IE Notation)"
+          style="text;html=1;align=center;verticalAlign=middle;resizable=0;strokeColor=none;fillColor=none;fontSize=17;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="6" width="1300" height="42" as="geometry"/>
+        </mxCell>
+
+        <!--
+          ================================================================
+          ENTITY STYLE DEFINITIONS (for reference)
+          swimlane header: fillColor=#23445D strokeColor=#23445D fontColor=#ffffff
+          field row: fillColor=#ffffff strokeColor=#d4d4d4
+          PK field: fontStyle=4 (underline)
+          FK field: italic
+          ================================================================
+        -->
+
+        <!-- ============================================================ -->
+        <!-- ROW 1 ENTITIES  (y = 68)                                      -->
+        <!-- Columns:  USER=50  PASSENGER=340  ROUTE=640  BUS=940         -->
+        <!-- ============================================================ -->
+
+        <!-- ── USER ── (5 fields × 24 + 28 header = 148 px tall) -->
+        <mxCell id="e_user" value="users"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="68" width="240" height="148" as="geometry"/>
+        </mxCell>
+        <mxCell id="u1" value="userId  (PK)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_user">
+          <mxGeometry y="28" width="240" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u2" value="email"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_user">
+          <mxGeometry y="52" width="240" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u3" value="phone"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_user">
+          <mxGeometry y="76" width="240" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u4" value="role  (PASSENGER | CONDUCTOR | OWNER | ADMIN)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_user">
+          <mxGeometry y="100" width="240" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u5" value="fcmToken"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_user">
+          <mxGeometry y="124" width="240" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ── PASSENGER ── (6 fields × 24 + 28 = 172 px) -->
+        <mxCell id="e_pass" value="passengers"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="340" y="68" width="250" height="172" as="geometry"/>
+        </mxCell>
+        <mxCell id="pa1" value="passengerId  (PK)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pass">
+          <mxGeometry y="28" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pa2" value="userId  (FK → users)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pass">
+          <mxGeometry y="52" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pa3" value="fullName"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pass">
+          <mxGeometry y="76" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pa4" value="walletBalance  (cents, integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pass">
+          <mxGeometry y="100" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pa5" value="phone"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pass">
+          <mxGeometry y="124" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pa6" value="dateOfBirth  (ISO 8601 string)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pass">
+          <mxGeometry y="148" width="250" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ── ROUTE ── (6 fields × 24 + 28 = 172 px) -->
+        <mxCell id="e_route" value="routes"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="645" y="68" width="255" height="172" as="geometry"/>
+        </mxCell>
+        <mxCell id="ro1" value="routeId  (PK)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_route">
+          <mxGeometry y="28" width="255" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="ro2" value="routeName"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_route">
+          <mxGeometry y="52" width="255" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="ro3" value="stops[ ]  (array: stopName, lat, lng)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_route">
+          <mxGeometry y="76" width="255" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="ro4" value="baseFareCents  (integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_route">
+          <mxGeometry y="100" width="255" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="ro5" value="farePerKmCents  (integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_route">
+          <mxGeometry y="124" width="255" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="ro6" value="totalDistanceKm  (float)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_route">
+          <mxGeometry y="148" width="255" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ── BUS ── (6 fields × 24 + 28 = 172 px) -->
+        <mxCell id="e_bus" value="buses"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="960" y="68" width="250" height="172" as="geometry"/>
+        </mxCell>
+        <mxCell id="b1" value="busId  (PK)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_bus">
+          <mxGeometry y="28" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="b2" value="routeId  (FK → routes)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_bus">
+          <mxGeometry y="52" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="b3" value="ownerId  (FK → users)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_bus">
+          <mxGeometry y="76" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="b4" value="registrationPlate"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_bus">
+          <mxGeometry y="100" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="b5" value="seatCapacity  (integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_bus">
+          <mxGeometry y="124" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="b6" value="status  (ACTIVE | INACTIVE)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_bus">
+          <mxGeometry y="148" width="250" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- ROW 2 ENTITIES  (y = 328)                                     -->
+        <!-- Columns: TOKEN=50  TRIP=340  PENDING_PAYMENT=660  AUDIT=980  -->
+        <!-- ============================================================ -->
+
+        <!-- ── TOKEN ── (8 fields × 24 + 28 = 220 px) -->
+        <mxCell id="e_token" value="tokens"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="328" width="245" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk1" value="tokenId  (PK, auto-generated)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="28" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk2" value="passengerId  (FK → passengers)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="52" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk3" value="destinationStopId"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="76" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk4" value="companionCount  (integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="100" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk5" value="status  (PENDING | ACTIVE | COMPLETED)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="124" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk6" value="createdAt  (ISO 8601 string)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="148" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk7" value="busId  (FK → buses, set on boarding)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="172" width="245" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tk8" value="boardedAt  (ISO 8601, set on boarding)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_token">
+          <mxGeometry y="196" width="245" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ── TRIP ── (15 fields × 24 + 28 = 388 px) -->
+        <mxCell id="e_trip" value="trips"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="340" y="304" width="270" height="388" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr1" value="tripId  (PK, auto-generated)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="28" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr2" value="passengerId  (FK → passengers)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="52" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr3" value="tokenId  (FK → tokens)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="76" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr4" value="busId  (FK → buses)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="100" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr5" value="conductorId  (FK → users)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="124" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr6" value="status  (ONGOING | COMPLETED)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="148" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr7" value="boardingTime  (ISO 8601 string)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="172" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr8" value="boardingStopName  (string)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="196" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr9" value="boardingLocation  (GeoPoint lat/lng)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="220" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr10" value="destinationStopId"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="244" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr11" value="companionCount  (integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="268" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr12" value="fareBase  (cents, integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="292" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr13" value="dropTime  (ISO 8601, set on drop)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="316" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr14" value="finalFare  (cents, set on drop)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="340" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr15" value="distanceTravelled  (km, float)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_trip">
+          <mxGeometry y="364" width="270" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ── PENDING_PAYMENT ── (9 fields × 24 + 28 = 244 px) -->
+        <mxCell id="e_pay" value="pendingPayments"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="665" y="328" width="270" height="244" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp1" value="orderId  (PK, WALLET-XXXX format)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="28" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp2" value="userId  (FK → users)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="52" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp3" value="passengerId  (FK → passengers)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="76" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp4" value="amountCents  (integer)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="100" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp5" value="currency  (e.g. LKR)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="124" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp6" value="status  (PENDING | COMPLETED | FAILED)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="148" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp7" value="createdAt  (ISO 8601 string)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="172" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp8" value="completedAt  (ISO 8601, set on success)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="196" width="270" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp9" value="payhereOrderId  (set on success)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_pay">
+          <mxGeometry y="220" width="270" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ── AUDIT_LOG ── (5 fields × 24 + 28 = 148 px) -->
+        <mxCell id="e_audit" value="auditLogs"
+          style="swimlane;fontStyle=1;align=center;startSize=28;fillColor=#23445D;strokeColor=#23445D;fontColor=#ffffff;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="990" y="328" width="250" height="148" as="geometry"/>
+        </mxCell>
+        <mxCell id="al1" value="logId  (PK, auto-generated)"
+          style="text;strokeColor=#d4d4d4;fillColor=#EAF4FF;align=left;spacingLeft=10;fontSize=11;fontStyle=5;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_audit">
+          <mxGeometry y="28" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="al2" value="userId  (FK → users)"
+          style="text;strokeColor=#d4d4d4;fillColor=#FFF4E0;align=left;spacingLeft=10;fontSize=11;fontStyle=2;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_audit">
+          <mxGeometry y="52" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="al3" value="action  (e.g. TOP_UP)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_audit">
+          <mxGeometry y="76" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="al4" value="data  (JSON: amountCents, orderId, …)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_audit">
+          <mxGeometry y="100" width="250" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="al5" value="timestamp  (Firestore Timestamp)"
+          style="text;strokeColor=#d4d4d4;fillColor=#ffffff;align=left;spacingLeft=10;fontSize=11;top=0;left=0;bottom=1;right=0;"
+          vertex="1" parent="e_audit">
+          <mxGeometry y="124" width="250" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- RELATIONSHIPS  (Crow's Foot / IE Notation)                   -->
+        <!--  startArrow = side CLOSEST to source entity                  -->
+        <!--  endArrow   = side CLOSEST to target entity                  -->
+        <!--  ERmandOne  = mandatory one  ( | )                           -->
+        <!--  ERmany     = many           ( crow's foot )                 -->
+        <!-- ============================================================ -->
+
+        <!-- R1: users (1) ─── (1) passengers  [userId] -->
+        <mxCell id="r1" value=""
+          style="endArrow=ERmandOne;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_user" target="e_pass" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r1_lbl" value="has profile"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r1">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R2: users (1) ─── (N) buses  [ownerId] — owner has many buses -->
+        <mxCell id="r2" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_user" target="e_bus" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="40"/>
+              <mxPoint x="1085" y="40"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r2_lbl" value="owns"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r2">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R3: routes (1) ─── (N) buses  [routeId] -->
+        <mxCell id="r3" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_route" target="e_bus" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r3_lbl" value="has"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r3">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R4: passengers (1) ─── (N) tokens  [passengerId] -->
+        <mxCell id="r4" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_pass" target="e_token" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r4_lbl" value="generates"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r4">
+          <mxGeometry x="-0.2" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R5: tokens (1) ─── (1) trips  [tokenId] -->
+        <mxCell id="r5" value=""
+          style="endArrow=ERmandOne;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_token" target="e_trip" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r5_lbl" value="creates"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r5">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R6: passengers (1) ─── (N) trips  [passengerId] -->
+        <mxCell id="r6" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;dashed=1;dashPattern=6 3;"
+          edge="1" source="e_pass" target="e_trip" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="465" y="295"/>
+              <mxPoint x="475" y="295"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r6_lbl" value="takes"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r6">
+          <mxGeometry x="0.2" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R7: buses (1) ─── (N) trips  [busId] -->
+        <mxCell id="r7" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_bus" target="e_trip" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1085" y="260"/>
+              <mxPoint x="475" y="260"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r7_lbl" value="serves"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r7">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R8: users (conductor) (1) ─── (N) trips  [conductorId] -->
+        <mxCell id="r8" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#666666;strokeWidth=1;dashed=1;dashPattern=6 3;"
+          edge="1" source="e_user" target="e_trip" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="50" y="280"/>
+              <mxPoint x="345" y="280"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r8_lbl" value="conducts"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;fontColor=#555555;"
+          vertex="1" connectable="0" parent="r8">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R9: users (1) ─── (N) pendingPayments  [userId] -->
+        <mxCell id="r9" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_user" target="e_pay" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="240"/>
+              <mxPoint x="800" y="240"/>
+              <mxPoint x="800" y="322"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r9_lbl" value="initiates"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r9">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R10: passengers (1) ─── (N) pendingPayments  [passengerId] -->
+        <mxCell id="r10" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_pass" target="e_pay" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r10_lbl" value="pays"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r10">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- R11: users (1) ─── (N) auditLogs  [userId] -->
+        <mxCell id="r11" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" source="e_user" target="e_audit" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="32"/>
+              <mxPoint x="1115" y="32"/>
+              <mxPoint x="1115" y="322"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r11_lbl" value="logged by"
+          style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontStyle=2;"
+          vertex="1" connectable="0" parent="r11">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LEGEND                                                        -->
+        <!-- ============================================================ -->
+        <mxCell id="leg_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="730" width="1400" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_title" value="Legend"
+          style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=13;fontStyle=1;fontColor=#333333;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="735" width="200" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- PK swatch -->
+        <mxCell id="leg_pk_box" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAF4FF;strokeColor=#d4d4d4;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="762" width="30" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_pk_txt" value="Primary Key (PK) — underlined"
+          style="text;html=1;align=left;strokeColor=none;fillColor=none;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="76" y="762" width="240" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- FK swatch -->
+        <mxCell id="leg_fk_box" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF4E0;strokeColor=#d4d4d4;"
+          vertex="1" parent="1">
+          <mxGeometry x="340" y="762" width="30" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_fk_txt" value="Foreign Key (FK) — italic"
+          style="text;html=1;align=left;strokeColor=none;fillColor=none;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="376" y="762" width="220" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Crow's foot line sample – 1 -->
+        <mxCell id="leg_one_line" value=""
+          style="endArrow=ERmandOne;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" parent="1">
+          <mxGeometry x="620" y="772" width="60" height="10" as="geometry">
+            <mxPoint x="620" y="772" as="sourcePoint"/>
+            <mxPoint x="680" y="772" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_one_txt" value="One-to-One (1:1)"
+          style="text;html=1;align=left;strokeColor=none;fillColor=none;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="690" y="762" width="180" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Crow's foot line sample – N -->
+        <mxCell id="leg_many_line" value=""
+          style="endArrow=ERmany;startArrow=ERmandOne;html=1;strokeColor=#23445D;strokeWidth=2;"
+          edge="1" parent="1">
+          <mxGeometry x="880" y="772" width="60" height="10" as="geometry">
+            <mxPoint x="880" y="772" as="sourcePoint"/>
+            <mxPoint x="940" y="772" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_many_txt" value="One-to-Many (1:N)"
+          style="text;html=1;align=left;strokeColor=none;fillColor=none;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="950" y="762" width="180" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg_note" value="Note: PayRoute uses Cloud Firestore (NoSQL). Relationships are logical — enforced by application code (Firebase Admin SDK), not by database foreign-key constraints."
+          style="text;html=1;align=left;strokeColor=none;fillColor=none;fontSize=10;fontStyle=2;fontColor=#666666;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="793" width="1380" height="22" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

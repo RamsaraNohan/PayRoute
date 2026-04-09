@@ -1,0 +1,284 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram name="Fig 3.2 - Architecture Diagram" id="arch_diagram">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="880" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ============================================================ -->
+        <!-- TITLE                                                         -->
+        <!-- ============================================================ -->
+        <mxCell id="title" value="Figure 3.2 — High-Level Architecture Diagram : PayRoute System"
+          style="text;html=1;align=center;verticalAlign=middle;resizable=0;strokeColor=none;fillColor=none;fontSize=17;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="100" y="6" width="1140" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LAYER 1: PRESENTATION  (Flutter client apps)                 -->
+        <!-- ============================================================ -->
+        <mxCell id="L1_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;fontSize=12;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="58" width="1280" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="L1_lbl" value="Presentation Layer  —  Flutter Client Applications"
+          style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;fontColor=#23445D;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="62" width="500" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Apps -->
+        <mxCell id="app_pass" value="📱 Passenger App&#xa;(Flutter / Android + iOS)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="48" y="88" width="185" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_cond" value="📱 Conductor App&#xa;(Flutter / Android + iOS)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="253" y="88" width="185" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_driv" value="📱 Driver App&#xa;(Flutter / Android + iOS)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="458" y="88" width="185" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_own" value="📱 Owner App&#xa;(Flutter / Android + iOS)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="663" y="88" width="185" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="app_adm" value="🌐 Admin Web Portal&#xa;(Flutter Web)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="878" y="88" width="200" height="68" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LAYER 2: AUTHENTICATION                                       -->
+        <!-- ============================================================ -->
+        <mxCell id="L2_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="1280" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="L2_lbl" value="Authentication Layer  —  Firebase Auth  (Google Cloud)"
+          style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;fontColor=#7d5f00;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="219" width="500" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fb_auth" value="🔐 Firebase Authentication&#xa;Email / Password  ·  UID-based JWT (ID Tokens)&#xa;Verified by Azure Functions on every request"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="390" y="241" width="560" height="52" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LAYER 3: API  (Azure Functions)                              -->
+        <!-- ============================================================ -->
+        <mxCell id="L3_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="329" width="830" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="L3_lbl" value="API Layer  —  Azure Functions  (TypeScript / Node 20, HTTP-triggered, Serverless)"
+          style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;fontColor=#2d5a1b;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="333" width="810" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fn1" value="generateToken&#xa;POST /api/generateToken"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="48" y="362" width="148" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="fn2" value="processBoarding&#xa;POST /api/processBoarding"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="214" y="362" width="148" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="fn3" value="signalDrop&#xa;POST /api/signalDrop"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="362" width="148" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="fn4" value="createPaymentSession&#xa;POST /api/createPaymentSession"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="546" y="362" width="148" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="fn5" value="payhereNotify&#xa;POST /api/payhereNotify"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="712" y="362" width="130" height="82" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- EXTERNAL: PayHere Gateway                                     -->
+        <!-- ============================================================ -->
+        <mxCell id="ext_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="882" y="329" width="428" height="145" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext_lbl" value="External Payment Gateway"
+          style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;fontColor=#7d1b1b;"
+          vertex="1" parent="1">
+          <mxGeometry x="892" y="333" width="300" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="payhere" value="💳 PayHere (Sri Lanka)&#xa;Checkout Page (redirect)&#xa;Webhook POST → payhereNotify&#xa;Signature: HMAC-MD5"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="905" y="358" width="390" height="98" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LAYER 4: DATA  (Firebase Services)                           -->
+        <!-- ============================================================ -->
+        <mxCell id="L4_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="496" width="1280" height="155" as="geometry"/>
+        </mxCell>
+        <mxCell id="L4_lbl" value="Data Layer  —  Google Firebase  (Firestore + FCM)"
+          style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;fontColor=#7d4000;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="600" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="firestore" value="🗄️ Cloud Firestore (NoSQL)&#xa;Collections: users · passengers&#xa;buses · routes · tokens&#xa;trips · pendingPayments · auditLogs"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="526" width="310" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="fb_auth2" value="🔐 Firebase Auth (verify)&#xa;JWT verification called&#xa;inside each Azure Function&#xa;before processing the request"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="420" y="526" width="310" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="fcm" value="🔔 Firebase Cloud Messaging (FCM)&#xa;Push Notifications:&#xa;Boarding confirmed · Trip completed&#xa;Wallet top-up successful"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="780" y="526" width="340" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- ARROWS / DATA FLOWS                                          -->
+        <!-- ============================================================ -->
+
+        <!-- 1. Passenger App → Firebase Auth  (login / get JWT) -->
+        <mxCell id="arr1" value="Login / Get JWT"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#6c8ebf;fontColor=#23445D;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="app_pass" target="fb_auth" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Passenger App → Azure Functions  (HTTPS with JWT) -->
+        <mxCell id="arr2" value="HTTPS + Bearer JWT&#xa;(generateToken / signalDrop)"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#82b366;fontColor=#2d5a1b;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="app_pass" target="fn1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="210"/>
+              <mxPoint x="122" y="355"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Conductor App → processBoarding  (HTTPS with JWT) -->
+        <mxCell id="arr3" value="HTTPS + Bearer JWT&#xa;(processBoarding)"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#82b366;fontColor=#2d5a1b;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="app_cond" target="fn2" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="345" y="210"/>
+              <mxPoint x="288" y="355"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Passenger App → createPaymentSession -->
+        <mxCell id="arr4" value="Top Up Wallet&#xa;(HTTPS + JWT)"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#82b366;fontColor=#2d5a1b;"
+          edge="1" source="app_pass" target="fn4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="210"/>
+              <mxPoint x="620" y="355"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. createPaymentSession → PayHere  (checkout redirect link) -->
+        <mxCell id="arr5" value="Checkout redirect URL"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#b85450;fontColor=#7d1b1b;"
+          edge="1" source="fn4" target="payhere" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. PayHere → payhereNotify  (webhook callback) -->
+        <mxCell id="arr6" value="Webhook POST (HMAC-MD5 verified)"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#b85450;fontColor=#7d1b1b;"
+          edge="1" source="payhere" target="fn5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 7. Azure Functions → Firestore  (SDK R/W) -->
+        <mxCell id="arr7" value="Read / Write (Firebase Admin SDK)"
+          style="endArrow=block;endFill=1;startArrow=open;startFill=0;html=1;fontSize=10;align=center;strokeColor=#d79b00;fontColor=#7d4000;"
+          edge="1" source="fn2" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 8. Azure Functions → FCM  (push notification) -->
+        <mxCell id="arr8" value="Send Push Notification"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#d79b00;fontColor=#7d4000;"
+          edge="1" source="fn2" target="fcm" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 9. FCM → Passenger App  (notification back to client, dashed) -->
+        <mxCell id="arr9" value="Push Notification"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#6c8ebf;fontColor=#23445D;dashed=1;dashPattern=8 4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.8;entryY=1;entryDx=0;entryDy=0;"
+          edge="1" source="fcm" target="app_pass" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="490"/>
+              <mxPoint x="190" y="162"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 10. Azure Functions verify JWT via Firebase Auth (data layer) -->
+        <mxCell id="arr10" value="Verify JWT (Admin SDK)"
+          style="endArrow=block;endFill=1;startArrow=none;html=1;fontSize=10;align=center;strokeColor=#d79b00;fontColor=#7d4000;"
+          edge="1" source="fn1" target="fb_auth2" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="122" y="490"/>
+              <mxPoint x="575" y="520"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LEGEND                                                        -->
+        <!-- ============================================================ -->
+        <mxCell id="leg_bg" value=""
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="665" width="1280" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg_txt" value="Key:    ──▶  HTTPS request (JWT-authenticated)    ──▶  Firebase SDK call    - - ▶  Push notification (async)    ──▶  Webhook (external)    All Azure Functions are stateless, HTTP-triggered, serverless on Azure."
+          style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=11;fontStyle=2;fontColor=#333333;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="665" width="1260" height="60" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
