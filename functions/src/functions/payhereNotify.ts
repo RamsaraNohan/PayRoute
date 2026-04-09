@@ -12,8 +12,10 @@ function verifyPayHereNotify(params: Record<string, string>): boolean {
     if (!merchant_id || !order_id || !payhere_amount || !payhere_currency || !status_code || !md5sig) {
         return false;
     }
+    // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
     // nosemgrep: javascript.lang.security.audit.node-md5.node-md5
     const secretHash = crypto.createHash("md5").update(MERCHANT_SECRET).digest("hex").toUpperCase();
+    // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
     const localSig = crypto
         .createHash("md5")
         .update(merchant_id + order_id + payhere_amount + payhere_currency + status_code + secretHash)

@@ -11,12 +11,14 @@ const IS_SANDBOX = process.env["PAYHERE_SANDBOX"] !== "false";
 // generation and signature verification (https://support.payhere.lk/api-&-mobile-sdk/payhere-checkout).
 // The use of MD5 here is not a security choice — it is a mandatory API contract.
 function buildPayHereHash(orderId: string, amountStr: string, currency: string): string {
+    // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
     // nosemgrep: javascript.lang.security.audit.node-md5.node-md5
     const merchantSecretHash = crypto
         .createHash("md5")
         .update(MERCHANT_SECRET)
         .digest("hex")
         .toUpperCase();
+    // lgtm[js/weak-cryptographic-algorithm] - MD5 mandated by PayHere payment gateway API spec
     return crypto
         .createHash("md5")
         .update(MERCHANT_ID + orderId + amountStr + currency + merchantSecretHash)
