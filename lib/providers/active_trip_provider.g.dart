@@ -6,26 +6,6 @@ part of 'active_trip_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activePassengerTripHash() =>
-    r'92e189c803685f1839efd28501600f0aad31d254';
-
-/// See also [activePassengerTrip].
-@ProviderFor(activePassengerTrip)
-final activePassengerTripProvider =
-    AutoDisposeStreamProvider<Map<String, dynamic>?>.internal(
-      activePassengerTrip,
-      name: r'activePassengerTripProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$activePassengerTripHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ActivePassengerTripRef =
-    AutoDisposeStreamProviderRef<Map<String, dynamic>?>;
 String _$currentActiveTripHash() => r'9260a195efe28c5bdb56ea3ef6c5c729f5aba41f';
 
 /// See also [currentActiveTrip].

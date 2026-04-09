@@ -26,6 +26,9 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
   bool _mapReady = false;
 
   @override
+  void initState() {
+    super.initState();
+    _listenToBus();
   }
 
   void _listenToBus() {

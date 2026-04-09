@@ -58,5 +58,21 @@ final currentUserStreamProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentUserStreamRef = AutoDisposeStreamProviderRef<UserModel?>;
+String _$onboardingStateHash() => r'7a1f9e2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f';
+
+/// See also [OnboardingState].
+@ProviderFor(OnboardingState)
+final onboardingStateProvider =
+    AutoDisposeNotifierProvider<OnboardingState, bool>.internal(
+      OnboardingState.new,
+      name: r'onboardingStateProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$onboardingStateHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$OnboardingState = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

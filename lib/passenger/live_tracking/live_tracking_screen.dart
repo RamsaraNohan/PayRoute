@@ -26,6 +26,9 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   bool _mapReady = false;
 
   @override
+  void initState() {
+    super.initState();
+    _startListeningToBus();
   }
 
   void _startListeningToBus() {
