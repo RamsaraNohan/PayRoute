@@ -145,6 +145,7 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       setState(() => _isLoading = false);
@@ -296,10 +297,10 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
               return data['status'] == 'BOARDED' || data['status'] == 'COMPLETED';
             }).length;
             final currency = NumberFormat('#,##0.00', 'en_US');
-            final totalCents = docs.fold<int>(0, (sum, doc) {
+            final totalCents = docs.fold<int>(0, (acc, doc) {
               final data = doc.data() as Map<String, dynamic>;
-              if (data['status'] != 'COMPLETED') return sum;
-              return sum + ((data['fareCents'] as int?) ?? 0);
+              if (data['status'] != 'COMPLETED') return acc;
+              return acc + ((data['fareCents'] as int?) ?? 0);
             });
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -52,9 +52,9 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
       _busAnnotation = await _circleManager!.create(CircleAnnotationOptions(
         geometry: point,
         circleRadius: 14.0,
-        circleColor: Colors.blueAccent.value,
+        circleColor: Colors.blueAccent.toARGB32(),
         circleStrokeWidth: 3.0,
-        circleStrokeColor: Colors.white.value,
+        circleStrokeColor: Colors.white.toARGB32(),
       ));
     } else {
       _busAnnotation = _busAnnotation!.copyWith(CircleAnnotationOptions(geometry: point));

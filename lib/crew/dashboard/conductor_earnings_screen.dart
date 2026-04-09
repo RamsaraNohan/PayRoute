@@ -45,9 +45,9 @@ class ConductorEarningsScreen extends StatelessWidget {
                 .snapshots(),
             builder: (context, snapshot) {
               final trips = snapshot.data?.docs ?? [];
-              final totalCents = trips.fold<int>(0, (sum, doc) {
+              final totalCents = trips.fold<int>(0, (acc, doc) {
                 final data = doc.data() as Map<String, dynamic>;
-                return sum + ((data['fareCents'] as int?) ?? 0);
+                return acc + ((data['fareCents'] as int?) ?? 0);
               });
 
               return ListView(

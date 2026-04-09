@@ -66,8 +66,8 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
     if (pickedFile != null) {
       setState(() {
-        if (type == 'profile') _profileImage = File(pickedFile.path);
-        else if (type == 'selfie') _selfieImage = File(pickedFile.path);
+        if (type == 'profile') { _profileImage = File(pickedFile.path); }
+        else if (type == 'selfie') { _selfieImage = File(pickedFile.path); }
         else if (type == 'bus' && busIndex != null) {
           if (subType == 'front') _fleet[busIndex].frontPhoto = File(pickedFile.path);
           if (subType == 'rmv') _fleet[busIndex].rmvPhoto = File(pickedFile.path);

@@ -146,7 +146,7 @@ class _ConductorHomeTab extends StatelessWidget {
                 children: [
                   _buildHeader(fullName),
                   const SizedBox(height: 28),
-                  isPending ? _buildWaitingState() : _buildBusCard(context, busId!),
+                  isPending ? _buildWaitingState() : _buildBusCard(context, busId),
                 ],
               );
             },

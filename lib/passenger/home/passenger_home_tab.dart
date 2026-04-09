@@ -381,7 +381,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
         );
       },
       loading: () => const SizedBox(),
-      error: (_, __) => const SizedBox(),
+      error: (_, _) => const SizedBox(),
     );
   }
 

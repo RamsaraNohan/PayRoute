@@ -129,7 +129,7 @@ class ProfileScreen extends ConsumerWidget {
                 _sectionTitle('Account Information'),
                 _infoTile(Icons.person_outline, 'Full Name', passenger.fullName),
                 _infoTile(Icons.badge_outlined, 'Role', 'Passenger'),
-                _infoTile(Icons.fingerprint, 'User ID', passenger.userId.substring(0, 12) + '...'),
+                _infoTile(Icons.fingerprint, 'User ID', '${passenger.userId.substring(0, 12)}...'),
 
                 const SizedBox(height: 24),
                 _sectionTitle('My Rides'),

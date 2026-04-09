@@ -43,12 +43,20 @@ class _PassengerRegistrationState extends State<PassengerRegistration> {
             ListTile(
               leading: const Icon(Icons.camera_alt, color: Colors.white),
               title: const Text('Take Photo', style: TextStyle(color: Colors.white)),
-              onTap: () async => Navigator.pop(context, await picker.pickImage(source: ImageSource.camera, imageQuality: 70)),
+              onTap: () async {
+                final image = await picker.pickImage(source: ImageSource.camera, imageQuality: 70);
+                if (!context.mounted) return;
+                Navigator.pop(context, image);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.photo_library, color: Colors.white),
               title: const Text('Choose from Gallery', style: TextStyle(color: Colors.white)),
-              onTap: () async => Navigator.pop(context, await picker.pickImage(source: ImageSource.gallery, imageQuality: 70)),
+              onTap: () async {
+                final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+                if (!context.mounted) return;
+                Navigator.pop(context, image);
+              },
             ),
           ],
         ),

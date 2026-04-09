@@ -57,12 +57,12 @@ class DriverDashboard extends StatelessWidget {
                 children: [
                   _buildDriverHeader(fullName),
                   const SizedBox(height: 28),
-                  isPending ? _buildWaitingState() : _buildBusCard(context, busId!),
+                  isPending ? _buildWaitingState() : _buildBusCard(context, busId),
                   const SizedBox(height: 32),
                   if (!isPending) ...[
                     _buildSectionTitle('Shift History'),
                     const SizedBox(height: 16),
-                    _buildShiftHistory(busId!),
+                    _buildShiftHistory(busId),
                   ],
                 ],
               );

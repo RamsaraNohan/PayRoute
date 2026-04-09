@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../models/trip_model.dart';
-import '../../models/passenger_model.dart';
 import '../utils/id_generator.dart';
 import '../utils/fare_calculator.dart';
 

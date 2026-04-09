@@ -54,9 +54,9 @@ class _ActiveTripScreenState extends State<ActiveTripScreen> {
             _busAnnotation = await _circleManager!.create(CircleAnnotationOptions(
               geometry: point,
               circleRadius: 14.0,
-              circleColor: Colors.purpleAccent.value,
+              circleColor: Colors.purpleAccent.toARGB32(),
               circleStrokeWidth: 3.0,
-              circleStrokeColor: Colors.white.value,
+              circleStrokeColor: Colors.white.toARGB32(),
             ));
           } else {
             _busAnnotation = _busAnnotation!.copyWith(CircleAnnotationOptions(geometry: point));

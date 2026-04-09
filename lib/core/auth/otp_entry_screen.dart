@@ -150,6 +150,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                     onPressed: _isLoading ? null : () async {
                       startTimer();
                       setState(() => _isLoading = true);
+                      final messenger = ScaffoldMessenger.of(context);
                       try {
                         await _authService.verifyPhoneNumber(
                           phoneNumber: '+94${widget.phoneNumber}',
@@ -159,7 +160,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                                 _verificationId = newVerificationId;
                                 _isLoading = false;
                               });
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              messenger.showSnackBar(
                                 const SnackBar(content: Text('OTP resent successfully')),
                               );
                             }
@@ -167,7 +168,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                           verificationFailed: (e) {
                             if (mounted) {
                               setState(() => _isLoading = false);
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              messenger.showSnackBar(
                                 SnackBar(content: Text('Resend failed: ${e.message}')),
                               );
                             }
@@ -176,7 +177,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                       } catch (e) {
                         if (mounted) {
                           setState(() => _isLoading = false);
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             SnackBar(content: Text('Resend error: $e')),
                           );
                         }

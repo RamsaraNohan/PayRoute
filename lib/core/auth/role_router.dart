@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/services/auth_service.dart';
@@ -9,7 +8,6 @@ import '../../crew/dashboard/conductor_dashboard.dart';
 import '../../driver/dashboard/driver_dashboard.dart';
 import '../../owner/dashboard/owner_dashboard.dart';
 import '../../admin/admin_dashboard.dart';
-import 'registration_screen.dart';
 import '../../auth/role_selection_screen.dart';
 import '../../auth/status/verification_pending_screen.dart';
 import '../../auth/status/verification_rejected_screen.dart';

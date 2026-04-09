@@ -208,7 +208,7 @@ class _DriverRegistrationState extends State<DriverRegistration> {
         const Text('Driving Experience', style: TextStyle(color: Colors.white70)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _expYears, items: ['1-3 Years', '3-5 Years', '5-10 Years', '10+ Years'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          initialValue: _expYears, items: ['1-3 Years', '3-5 Years', '5-10 Years', '10+ Years'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (v) => setState(() => _expYears = v!), dropdownColor: AppTheme.backgroundDark, style: const TextStyle(color: Colors.white),
           decoration: _inputDecoration('', Icons.history),
         ),

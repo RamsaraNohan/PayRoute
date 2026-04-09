@@ -22,7 +22,7 @@ Future<void> initLocalNotifications() async {
     const InitializationSettings(android: androidSettings, iOS: iosSettings),
     onDidReceiveNotificationResponse: (details) {
       // Tapping a local notification (foreground) — payload contains the FCM type
-      _routeFromPayload(details.payload);
+      FCMService._routeFromPayload(details.payload);
     },
   );
 }

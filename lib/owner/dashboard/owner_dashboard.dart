@@ -6,12 +6,8 @@ import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/id_generator.dart';
 import '../../core/utils/validator.dart';
-import '../../core/services/storage_service.dart';
 import '../../models/bus_model.dart';
 import '../../core/services/invite_service.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:share_plus/share_plus.dart';
 
 class OwnerDashboard extends StatefulWidget {
   const OwnerDashboard({super.key});
@@ -263,6 +259,7 @@ class _OwnerFleetTabState extends State<_OwnerFleetTab> {
           ElevatedButton(
             onPressed: () async {
               await FirebaseFirestore.instance.collection('buses').doc(busId).update({'status': 'pending_deletion'});
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
@@ -431,11 +428,13 @@ class _BusEditFormState extends State<_BusEditForm> {
             'requestedAt': FieldValue.serverTimestamp(),
           });
         }
-        
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Changes submitted for Admin approval.')));
       }
+      if (!mounted) return;
       Navigator.pop(context);
     } catch (e) {
+      if (!mounted) return;
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
@@ -494,7 +493,7 @@ class _BusEditFormState extends State<_BusEditForm> {
       builder: (context, snapshot) {
         final staff = snapshot.data?.docs ?? [];
         return DropdownButtonFormField<String>(
-          value: role == 'driver' ? _selectedDriverId : _selectedConductorId,
+          initialValue: role == 'driver' ? _selectedDriverId : _selectedConductorId,
           dropdownColor: AppTheme.backgroundDark,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
@@ -527,6 +526,7 @@ class _OwnerStaffTab extends StatelessWidget {
   const _OwnerStaffTab();
 
   void _generateInvite(BuildContext context, String role) async {
+    final messenger = ScaffoldMessenger.of(context);
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
@@ -540,7 +540,7 @@ class _OwnerStaffTab extends StatelessWidget {
       );
       await InviteService.shareInvite(link);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
