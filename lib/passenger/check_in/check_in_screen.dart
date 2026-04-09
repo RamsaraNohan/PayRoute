@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart' as cf;
 import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
 import '../../core/services/trip_service.dart';
-import '../active_trip/active_trip_screen.dart';
 import 'package:intl/intl.dart';
 
 class CheckInScreen extends ConsumerStatefulWidget {
@@ -21,7 +20,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
   late final MobileScannerController _scannerController;
   bool _isScanning = true;
   bool _processing = false;
-  int _companions = 0;
+  final int _companions = 0;
   bool _nfcMode = false;
   bool _nfcSupported = false;
   bool _nfcListening = false;
@@ -319,7 +318,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                       style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
                     ),
                     loading: () => const SizedBox(),
-                    error: (_, __) => const SizedBox(),
+                    error: (_, _) => const SizedBox(),
                   ),
                 ],
               ),

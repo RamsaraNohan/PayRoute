@@ -98,11 +98,23 @@ class _DriverRegistrationState extends State<DriverRegistration> {
       final driverId = IdGenerator.generate('DRV');
       final deviceInfo = await DeviceInfoUtil.getInfo();
 
-      // 1. Upload all photos
-      final profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
-      final licenseFrontUrl = await StorageService.uploadFile(file: _licenseFront!, storagePath: 'drivers/$driverId/license_front.jpg');
-      final licenseBackUrl = await StorageService.uploadFile(file: _licenseBack!, storagePath: 'drivers/$driverId/license_back.jpg');
-      final selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'drivers/$driverId/selfie.jpg');
+      // 1. Upload all photos (non-fatal if storage unavailable)
+      String profileUrl = '';
+      String licenseFrontUrl = '';
+      String licenseBackUrl = '';
+      String selfieUrl = '';
+      try {
+        profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
+      } catch (e) { debugPrint('Driver profile photo upload failed: $e'); }
+      try {
+        licenseFrontUrl = await StorageService.uploadFile(file: _licenseFront!, storagePath: 'drivers/$driverId/license_front.jpg');
+      } catch (e) { debugPrint('License front upload failed: $e'); }
+      try {
+        licenseBackUrl = await StorageService.uploadFile(file: _licenseBack!, storagePath: 'drivers/$driverId/license_back.jpg');
+      } catch (e) { debugPrint('License back upload failed: $e'); }
+      try {
+        selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'drivers/$driverId/selfie.jpg');
+      } catch (e) { debugPrint('Selfie upload failed: $e'); }
 
       // 2. Firestore Transaction
       final db = FirebaseFirestore.instance;
@@ -208,7 +220,7 @@ class _DriverRegistrationState extends State<DriverRegistration> {
         const Text('Driving Experience', style: TextStyle(color: Colors.white70)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _expYears, items: ['1-3 Years', '3-5 Years', '5-10 Years', '10+ Years'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          initialValue: _expYears, items: ['1-3 Years', '3-5 Years', '5-10 Years', '10+ Years'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (v) => setState(() => _expYears = v!), dropdownColor: AppTheme.backgroundDark, style: const TextStyle(color: Colors.white),
           decoration: _inputDecoration('', Icons.history),
         ),

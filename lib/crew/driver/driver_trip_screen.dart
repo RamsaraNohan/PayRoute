@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' hide Size;
 import 'package:cloud_firestore/cloud_firestore.dart' as cf;
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/location_service.dart';
@@ -65,9 +65,9 @@ class _DriverTripScreenState extends State<DriverTripScreen> {
       await _circleManager!.create(CircleAnnotationOptions(
         geometry: Point(coordinates: Position(stop.location.longitude, stop.location.latitude)),
         circleRadius: 10.0,
-        circleColor: AppTheme.purpleLight.value,
+        circleColor: AppTheme.purpleLight.toARGB32(),
         circleStrokeWidth: 2.0,
-        circleStrokeColor: Colors.white.value,
+        circleStrokeColor: Colors.white.toARGB32(),
       ));
     }
 
@@ -75,7 +75,7 @@ class _DriverTripScreenState extends State<DriverTripScreen> {
     if (positions.length >= 2) {
       await _polylineManager!.create(PolylineAnnotationOptions(
         geometry: LineString(coordinates: positions),
-        lineColor: AppTheme.purpleLight.value,
+        lineColor: AppTheme.purpleLight.toARGB32(),
         lineWidth: 5.0,
       ));
     }

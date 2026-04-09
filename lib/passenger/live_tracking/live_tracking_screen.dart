@@ -23,10 +23,9 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   // Cache the last known position so we can draw the marker once the map is ready
   Position? _lastKnownPos;
 
+  bool _mapReady = false;
+
   @override
-  void initState() {
-    super.initState();
-    _startListeningToBus();
   }
 
   void _startListeningToBus() {
@@ -52,9 +51,9 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
       _busAnnotation = await _circleManager!.create(CircleAnnotationOptions(
         geometry: point,
         circleRadius: 14.0,
-        circleColor: Colors.blueAccent.value,
+        circleColor: Colors.blueAccent.toARGB32(),
         circleStrokeWidth: 3.0,
-        circleStrokeColor: Colors.white.value,
+        circleStrokeColor: Colors.white.toARGB32(),
       ));
     } else {
       _busAnnotation = _busAnnotation!.copyWith(CircleAnnotationOptions(geometry: point));

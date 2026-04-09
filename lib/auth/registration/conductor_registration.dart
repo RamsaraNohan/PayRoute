@@ -83,9 +83,15 @@ class _ConductorRegistrationState extends State<ConductorRegistration> {
       final conductorId = IdGenerator.generate('CON');
       final deviceInfo = await DeviceInfoUtil.getInfo();
 
-      // 1. Upload photos
-      final profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
-      final selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'conductors/$conductorId/selfie.jpg');
+      // 1. Upload photos (non-fatal if storage unavailable)
+      String profileUrl = '';
+      String selfieUrl = '';
+      try {
+        profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
+      } catch (e) { debugPrint('Conductor profile photo upload failed: $e'); }
+      try {
+        selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'conductors/$conductorId/selfie.jpg');
+      } catch (e) { debugPrint('Conductor selfie upload failed: $e'); }
 
       // 2. Firestore Transaction
       final db = FirebaseFirestore.instance;
@@ -166,7 +172,7 @@ class _ConductorRegistrationState extends State<ConductorRegistration> {
         const Text('Ticketing Experience', style: TextStyle(color: Colors.white70)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _expYears, items: ['1-3 Years', '3-5 Years', '5-10 Years', '10+ Years'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          initialValue: _expYears, items: ['1-3 Years', '3-5 Years', '5-10 Years', '10+ Years'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (v) => setState(() => _expYears = v!), dropdownColor: AppTheme.backgroundDark, style: const TextStyle(color: Colors.white),
           decoration: _inputDecoration('', Icons.history),
         ),

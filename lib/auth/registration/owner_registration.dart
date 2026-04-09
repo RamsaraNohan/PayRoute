@@ -66,8 +66,8 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
     if (pickedFile != null) {
       setState(() {
-        if (type == 'profile') _profileImage = File(pickedFile.path);
-        else if (type == 'selfie') _selfieImage = File(pickedFile.path);
+        if (type == 'profile') { _profileImage = File(pickedFile.path); }
+        else if (type == 'selfie') { _selfieImage = File(pickedFile.path); }
         else if (type == 'bus' && busIndex != null) {
           if (subType == 'front') _fleet[busIndex].frontPhoto = File(pickedFile.path);
           if (subType == 'rmv') _fleet[busIndex].rmvPhoto = File(pickedFile.path);
@@ -126,9 +126,15 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
       final ownerId = IdGenerator.generate('OWN');
       final deviceInfo = await DeviceInfoUtil.getInfo();
 
-      // 1. Upload Baseline Photos
-      final profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
-      final selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'owners/$ownerId/selfie.jpg');
+      // 1. Upload Baseline Photos (non-fatal if storage unavailable)
+      String profileUrl = '';
+      String selfieUrl = '';
+      try {
+        profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
+      } catch (e) { debugPrint('Owner profile photo upload failed: $e'); }
+      try {
+        selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'owners/$ownerId/selfie.jpg');
+      } catch (e) { debugPrint('Owner selfie upload failed: $e'); }
 
       // 2. Prep Firestore Docs
       final db = FirebaseFirestore.instance;
@@ -138,12 +144,21 @@ class _OwnerRegistrationState extends State<OwnerRegistration> {
         final b = _fleet[i];
         final busId = IdGenerator.generate('BUS');
         
-        // Upload Bus Photos
-        final fUrl = await StorageService.uploadFile(file: b.frontPhoto!, storagePath: 'buses/$busId/front.jpg');
-        final rUrl = await StorageService.uploadFile(file: b.rmvPhoto!, storagePath: 'buses/$busId/rmv.jpg');
-        final iUrl = b.insurancePhoto != null 
-            ? await StorageService.uploadFile(file: b.insurancePhoto!, storagePath: 'buses/$busId/insurance.jpg')
-            : '';
+        // Upload Bus Photos (non-fatal if storage unavailable)
+        String fUrl = '';
+        String rUrl = '';
+        String iUrl = '';
+        try {
+          fUrl = await StorageService.uploadFile(file: b.frontPhoto!, storagePath: 'buses/$busId/front.jpg');
+        } catch (e) { debugPrint('Bus front photo upload failed: $e'); }
+        try {
+          rUrl = await StorageService.uploadFile(file: b.rmvPhoto!, storagePath: 'buses/$busId/rmv.jpg');
+        } catch (e) { debugPrint('Bus RMV photo upload failed: $e'); }
+        if (b.insurancePhoto != null) {
+          try {
+            iUrl = await StorageService.uploadFile(file: b.insurancePhoto!, storagePath: 'buses/$busId/insurance.jpg');
+          } catch (e) { debugPrint('Bus insurance photo upload failed: $e'); }
+        }
 
         busDocs.add({
           'busId': busId,

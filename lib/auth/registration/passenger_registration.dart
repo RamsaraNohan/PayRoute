@@ -43,12 +43,20 @@ class _PassengerRegistrationState extends State<PassengerRegistration> {
             ListTile(
               leading: const Icon(Icons.camera_alt, color: Colors.white),
               title: const Text('Take Photo', style: TextStyle(color: Colors.white)),
-              onTap: () async => Navigator.pop(context, await picker.pickImage(source: ImageSource.camera, imageQuality: 70)),
+              onTap: () async {
+                final image = await picker.pickImage(source: ImageSource.camera, imageQuality: 70);
+                if (!context.mounted) return;
+                Navigator.pop(context, image);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.photo_library, color: Colors.white),
               title: const Text('Choose from Gallery', style: TextStyle(color: Colors.white)),
-              onTap: () async => Navigator.pop(context, await picker.pickImage(source: ImageSource.gallery, imageQuality: 70)),
+              onTap: () async {
+                final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+                if (!context.mounted) return;
+                Navigator.pop(context, image);
+              },
             ),
           ],
         ),
@@ -63,12 +71,6 @@ class _PassengerRegistrationState extends State<PassengerRegistration> {
   void _nextStep() {
     if (_currentStep == 0) {
       if (_formKey1.currentState!.validate()) {
-        if (_profileImage == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please select a profile photo')),
-          );
-          return;
-        }
         setState(() => _currentStep++);
       }
     }
@@ -82,13 +84,17 @@ class _PassengerRegistrationState extends State<PassengerRegistration> {
     if (user == null) return;
 
     try {
-      // 1. Upload Profile Photo
+      // 1. Upload Profile Photo (optional – continue without photo if storage unavailable)
       String photoUrl = '';
       if (_profileImage != null) {
-        photoUrl = await StorageService.uploadFile(
-          file: _profileImage!,
-          storagePath: 'users/${user.uid}/profile.jpg',
-        );
+        try {
+          photoUrl = await StorageService.uploadFile(
+            file: _profileImage!,
+            storagePath: 'users/${user.uid}/profile.jpg',
+          );
+        } catch (e) {
+          debugPrint('Profile photo upload failed (non-fatal): $e');
+        }
       }
 
       // 2. Generate Passenger ID

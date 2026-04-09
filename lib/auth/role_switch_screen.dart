@@ -152,7 +152,7 @@ class RoleSwitchScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.add_circle_outline, color: Colors.white38, size: 48),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Text(
               'Add Role',
               style: TextStyle(

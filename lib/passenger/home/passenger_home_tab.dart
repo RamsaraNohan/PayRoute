@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
+import '../../models/passenger_model.dart';
 import '../wallet/wallet_screen.dart';
 import '../booking/advance_booking_screen.dart';
 import '../check_in/check_in_screen.dart';
@@ -286,6 +287,8 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
       ),
     );
   }
+
+  Widget _buildHeader(PassengerModel passenger) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -381,7 +384,7 @@ class _PassengerHomeTabState extends State<PassengerHomeTab> {
         );
       },
       loading: () => const SizedBox(),
-      error: (_, __) => const SizedBox(),
+      error: (_, _) => const SizedBox(),
     );
   }
 

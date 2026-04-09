@@ -75,12 +75,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ListTile(
               leading: const Icon(Icons.camera_alt, color: Colors.white),
               title: const Text('Take Photo', style: TextStyle(color: Colors.white)),
-              onTap: () async => Navigator.pop(ctx, await picker.pickImage(source: ImageSource.camera, imageQuality: 70)),
+              onTap: () async {
+                final image = await picker.pickImage(source: ImageSource.camera, imageQuality: 70);
+                if (!ctx.mounted) return;
+                Navigator.pop(ctx, image);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.photo_library, color: Colors.white),
               title: const Text('Choose from Gallery', style: TextStyle(color: Colors.white)),
-              onTap: () async => Navigator.pop(ctx, await picker.pickImage(source: ImageSource.gallery, imageQuality: 70)),
+              onTap: () async {
+                final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+                if (!ctx.mounted) return;
+                Navigator.pop(ctx, image);
+              },
             ),
           ],
         ),
