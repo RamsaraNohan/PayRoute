@@ -1,0 +1,641 @@
+<mxfile host="app.diagrams.net" version="21.0.0" type="device">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PAGE 1 – Fig 3.1  Use Case Diagram
+       ═══════════════════════════════════════════════════════════ -->
+  <diagram name="Fig 3.1 - Use Case Diagram" id="usecase">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1"
+                  tooltips="1" connect="1" arrows="1" fold="1" page="1"
+                  pageScale="1" pageWidth="1169" pageHeight="827"
+                  math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ── System Boundary ── -->
+        <mxCell id="sb" value="&lt;b&gt;PayRoute System&lt;/b&gt;"
+          style="text;html=1;strokeColor=#336791;fillColor=none;
+                 align=center;verticalAlign=top;whiteSpace=wrap;
+                 rounded=1;dashed=1;dashPattern=8 8;strokeWidth=2;
+                 fontSize=15;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="190" y="60" width="760" height="720" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Actors ── -->
+        <mxCell id="a_pass" value="Passenger"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;
+                 fontSize=12;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="310" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_cond" value="Conductor"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;
+                 fontSize=12;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="1060" y="180" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_own" value="Bus Owner"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;
+                 fontSize=12;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="530" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_adm" value="Admin"
+          style="shape=mxgraph.uml.actor;whiteSpace=wrap;html=1;
+                 fontSize=12;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="1060" y="500" width="50" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Use Cases – left cluster (Passenger) ── -->
+        <mxCell id="uc1" value="Register / Login"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="210" y="110" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc2" value="Generate Boarding Token"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="210" y="220" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc3" value="Top Up Wallet (PayHere)"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="210" y="330" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc4" value="Signal Drop (Alight)"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="210" y="440" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc5" value="View Trip History"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="210" y="550" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc6" value="Receive Push Notification"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="210" y="660" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Use Cases – middle cluster (Admin) ── -->
+        <mxCell id="uc7" value="Manage Users"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="490" y="150" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc8" value="Manage Routes"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="490" y="280" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc9" value="Manage Buses"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="490" y="410" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc10" value="View Audit Logs"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="490" y="540" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Use Cases – right cluster (Conductor / Owner) ── -->
+        <mxCell id="uc11" value="Process Boarding&#xa;(Scan Token)"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="760" y="150" width="165" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc12" value="View Active Trip"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="760" y="270" width="165" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc13" value="Register Bus"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="760" y="390" width="165" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc14" value="View Revenue Report"
+          style="ellipse;whiteSpace=wrap;html=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="760" y="510" width="165" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Edges: Passenger ── -->
+        <mxCell id="e_p1"  style="endArrow=none;" edge="1" source="a_pass" target="uc1"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_p2"  style="endArrow=none;" edge="1" source="a_pass" target="uc2"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_p3"  style="endArrow=none;" edge="1" source="a_pass" target="uc3"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_p4"  style="endArrow=none;" edge="1" source="a_pass" target="uc4"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_p5"  style="endArrow=none;" edge="1" source="a_pass" target="uc5"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_p6"  style="endArrow=none;" edge="1" source="a_pass" target="uc6"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ── Edges: Conductor ── -->
+        <mxCell id="e_c1"  style="endArrow=none;" edge="1" source="a_cond" target="uc11" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c2"  style="endArrow=none;" edge="1" source="a_cond" target="uc12" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ── Edges: Bus Owner ── -->
+        <mxCell id="e_o1"  style="endArrow=none;" edge="1" source="a_own"  target="uc13" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_o2"  style="endArrow=none;" edge="1" source="a_own"  target="uc14" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ── Edges: Admin ── -->
+        <mxCell id="e_a1"  style="endArrow=none;" edge="1" source="a_adm"  target="uc7"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_a2"  style="endArrow=none;" edge="1" source="a_adm"  target="uc8"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_a3"  style="endArrow=none;" edge="1" source="a_adm"  target="uc9"  parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_a4"  style="endArrow=none;" edge="1" source="a_adm"  target="uc10" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ── «include» relationship: Top-Up includes PayHere webhook ── -->
+        <mxCell id="inc1" value="«include»"
+          style="endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1"
+          source="uc3" target="uc11" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="380" y="355"/><mxPoint x="600" y="355"/><mxPoint x="760" y="178"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PAGE 2 – Fig 3.2  High-Level Architecture Diagram
+       ═══════════════════════════════════════════════════════════ -->
+  <diagram name="Fig 3.2 - Architecture Diagram" id="arch">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1"
+                  tooltips="1" connect="1" arrows="1" fold="1" page="1"
+                  pageScale="1" pageWidth="1169" pageHeight="827"
+                  math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ══ Layer 1 – Client Layer ══ -->
+        <mxCell id="L1_bg" value="&lt;b&gt;Client Layer – Flutter / Web&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;
+                 strokeColor=#6c8ebf;fontSize=13;verticalAlign=top;
+                 spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="1100" height="130" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="app_pass" value="📱 Passenger App&#xa;(Flutter)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="160" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="app_cond" value="📱 Conductor App&#xa;(Flutter)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="250" y="80" width="160" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="app_driv" value="📱 Driver App&#xa;(Flutter)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="440" y="80" width="160" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="app_own" value="📱 Owner App&#xa;(Flutter)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="630" y="80" width="160" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="app_adm" value="🌐 Admin Web&#xa;(Flutter Web)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="820" y="80" width="160" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Layer 2 – Authentication (Firebase Auth) ══ -->
+        <mxCell id="L2_bg" value="&lt;b&gt;Authentication Layer&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;
+                 strokeColor=#d6b656;fontSize=13;verticalAlign=top;
+                 spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="210" width="1100" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fb_auth" value="🔐 Firebase Authentication&#xa;(Email/Password + UID-based JWT)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#d6b656;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="240" width="400" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Layer 3 – API Layer ══ -->
+        <mxCell id="L3_bg" value="&lt;b&gt;API Layer – Azure Functions (TypeScript, Node 20)&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;
+                 strokeColor=#82b366;fontSize=13;verticalAlign=top;
+                 spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="350" width="780" height="130" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fn1" value="generateToken"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#82b366;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="400" width="130" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fn2" value="processBoarding"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#82b366;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="200" y="400" width="130" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fn3" value="signalDrop"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#82b366;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="350" y="400" width="130" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fn4" value="createPaymentSession"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#82b366;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="500" y="400" width="140" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fn5" value="payhereNotify&#xa;(webhook)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#82b366;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="660" y="400" width="130" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ External – PayHere ══ -->
+        <mxCell id="payhere" value="💳 PayHere&#xa;Payment Gateway"
+          style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.traditional_server;
+                 rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;
+                 strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="860" y="375" width="250" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Layer 4 – Backend Services ══ -->
+        <mxCell id="L4_bg" value="&lt;b&gt;Backend Services – Google Firebase&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;
+                 strokeColor=#d79b00;fontSize=13;verticalAlign=top;
+                 spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="530" width="1100" height="130" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="firestore" value="🗄️ Cloud Firestore&#xa;(users, passengers, buses,&#xa;routes, tokens, trips, …)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#d79b00;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="580" width="260" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fb_auth2" value="🔐 Firebase Auth&#xa;(token verification in Functions)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#d79b00;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="390" y="580" width="260" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fcm" value="🔔 Firebase Cloud Messaging (FCM)&#xa;(push notifications)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;
+                 strokeColor=#d79b00;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="700" y="580" width="360" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Arrows – Client → Auth ══ -->
+        <mxCell id="ar1" value="Firebase ID Token"
+          style="endArrow=block;endFill=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;"
+          edge="1" source="app_pass" target="fb_auth" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ar1b" style="endArrow=block;endFill=1;fontSize=10;"
+          edge="1" source="app_cond" target="fb_auth" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Arrows – Client → Azure Functions (HTTPS + Bearer token) ══ -->
+        <mxCell id="ar2" value="HTTPS + Bearer token"
+          style="endArrow=block;endFill=1;fontSize=10;strokeColor=#82b366;"
+          edge="1" source="app_pass" target="fn1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="140" y="320"/><mxPoint x="115" y="320"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ar2b" style="endArrow=block;endFill=1;strokeColor=#82b366;"
+          edge="1" source="app_cond" target="fn2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ar2c" style="endArrow=block;endFill=1;strokeColor=#82b366;"
+          edge="1" source="app_pass" target="fn3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ar2d" style="endArrow=block;endFill=1;strokeColor=#82b366;"
+          edge="1" source="app_pass" target="fn4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Arrows – PayHere → payhereNotify webhook ══ -->
+        <mxCell id="ar3" value="Webhook (HMAC-verified)"
+          style="endArrow=block;endFill=1;fontSize=10;strokeColor=#b85450;"
+          edge="1" source="payhere" target="fn5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ar3b" value="Redirect (checkout)"
+          style="endArrow=block;endFill=1;fontSize=10;strokeColor=#b85450;"
+          edge="1" source="fn4" target="payhere" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Arrows – Azure Functions → Firestore ══ -->
+        <mxCell id="ar4" value="Read / Write (Firestore SDK)"
+          style="endArrow=block;endFill=1;fontSize=10;strokeColor=#d79b00;"
+          edge="1" source="fn2" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ar4b" style="endArrow=block;endFill=1;strokeColor=#d79b00;"
+          edge="1" source="fn3" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ar4c" style="endArrow=block;endFill=1;strokeColor=#d79b00;"
+          edge="1" source="fn5" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ Arrows – Azure Functions → FCM ══ -->
+        <mxCell id="ar5" value="Push (boarding/drop/top-up)"
+          style="endArrow=block;endFill=1;fontSize=10;strokeColor=#d79b00;"
+          edge="1" source="fn2" target="fcm" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="265" y="510"/><mxPoint x="880" y="510"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ══ Arrows – FCM → Client (notification) ══ -->
+        <mxCell id="ar6" value="Push notification"
+          style="endArrow=block;endFill=1;fontSize=10;strokeColor=#d79b00;dashed=1;"
+          edge="1" source="fcm" target="app_pass" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PAGE 3 – Fig 3.3  Entity-Relationship Diagram
+       ═══════════════════════════════════════════════════════════ -->
+  <diagram name="Fig 3.3 - ER Diagram" id="er">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1"
+                  tooltips="1" connect="1" arrows="1" fold="1" page="1"
+                  pageScale="1" pageWidth="1654" pageHeight="1169"
+                  math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ══════════ ENTITY: users ══════════ -->
+        <mxCell id="users_h" value="users"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="60" width="220" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="u_id"    value="🔑 userId (PK)"       style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="users_h"><mxGeometry y="26"  width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="u_email" value="email"                 style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="users_h"><mxGeometry y="52"  width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="u_phone" value="phone"                 style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="users_h"><mxGeometry y="78"  width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="u_role"  value="role"                  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="users_h"><mxGeometry y="104" width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="u_fcm"   value="fcmToken"              style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="users_h"><mxGeometry y="130" width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="u_pass"  value="passwordHash"          style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="users_h"><mxGeometry y="156" width="220" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: passengers ══════════ -->
+        <mxCell id="pass_h" value="passengers"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="360" y="60" width="230" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="p_id"     value="🔑 passengerId (PK)"  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pass_h"><mxGeometry y="26"  width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="p_uid"    value="🔗 userId (FK → users)" style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pass_h"><mxGeometry y="52"  width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="p_name"   value="fullName"              style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pass_h"><mxGeometry y="78"  width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="p_bal"    value="walletBalance (cents)"  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pass_h"><mxGeometry y="104" width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="p_nic"    value="nicNumber"             style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pass_h"><mxGeometry y="130" width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="p_dob"    value="dateOfBirth"           style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pass_h"><mxGeometry y="156" width="230" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: routes ══════════ -->
+        <mxCell id="route_h" value="routes"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="680" y="60" width="250" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_id"    value="🔑 routeId (PK)"        style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="route_h"><mxGeometry y="26"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="r_name"  value="routeName"               style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="route_h"><mxGeometry y="52"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="r_stops" value="stops[ ] (GeoPoint array)" style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="route_h"><mxGeometry y="78"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="r_base"  value="baseFareCents"           style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="route_h"><mxGeometry y="104" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="r_perkm" value="farePerKmCents"          style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="route_h"><mxGeometry y="130" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="r_dist"  value="totalDistanceKm"         style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="route_h"><mxGeometry y="156" width="250" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: buses ══════════ -->
+        <mxCell id="bus_h" value="buses"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="1020" y="60" width="230" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="b_id"    value="🔑 busId (PK)"           style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="bus_h"><mxGeometry y="26"  width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="b_rid"   value="🔗 routeId (FK → routes)"  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="bus_h"><mxGeometry y="52"  width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="b_oid"   value="🔗 ownerId (FK → users)"   style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="bus_h"><mxGeometry y="78"  width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="b_plate" value="registrationPlate"         style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="bus_h"><mxGeometry y="104" width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="b_seats" value="seatCapacity"              style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="bus_h"><mxGeometry y="130" width="230" height="26" as="geometry"/></mxCell>
+        <mxCell id="b_stat"  value="status"                    style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="bus_h"><mxGeometry y="156" width="230" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: tokens ══════════ -->
+        <mxCell id="token_h" value="tokens"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="360" width="250" height="250" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_id"    value="🔑 tokenId (PK)"             style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="26"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_pid"   value="🔗 passengerId (FK → pass.)" style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="52"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_dest"  value="destinationStopId"            style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="78"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_comp"  value="companionCount"               style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="104" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_stat"  value="status (PENDING|ACTIVE|COMPLETED)" style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="token_h"><mxGeometry y="130" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_cat"   value="createdAt (ISO string)"       style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="156" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_bid"   value="🔗 busId (FK → buses)"        style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="182" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="t_bat"   value="boardedAt (ISO string)"       style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="token_h"><mxGeometry y="208" width="250" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: trips ══════════ -->
+        <mxCell id="trip_h" value="trips"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="420" y="360" width="280" height="380" as="geometry"/>
+        </mxCell>
+        <mxCell id="tr_id"   value="🔑 tripId (PK)"                 style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="26"  width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_pid"  value="🔗 passengerId (FK → pass.)"    style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="52"  width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_tid"  value="🔗 tokenId (FK → tokens)"       style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="78"  width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_bid"  value="🔗 busId (FK → buses)"          style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="104" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_cid"  value="🔗 conductorId (FK → users)"    style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="130" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_st"   value="status (ONGOING|COMPLETED)"      style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="156" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_bt"   value="boardingTime (ISO string)"       style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="182" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_bs"   value="boardingStopName"                style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="208" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_bl"   value="boardingLocation (GeoPoint)"     style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="234" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_ds"   value="destinationStopId"               style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="260" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_cc"   value="companionCount"                  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="286" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_fb"   value="fareBase (cents)"                style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="312" width="280" height="26" as="geometry"/></mxCell>
+        <mxCell id="tr_ff"   value="finalFare (cents)"               style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="trip_h"><mxGeometry y="338" width="280" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: pendingPayments ══════════ -->
+        <mxCell id="pay_h" value="pendingPayments"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="820" y="360" width="250" height="250" as="geometry"/>
+        </mxCell>
+        <mxCell id="pp_id"  value="🔑 orderId (PK)"             style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="26"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_uid" value="🔗 userId (FK → users)"      style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="52"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_pid" value="🔗 passengerId (FK → pass.)" style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="78"  width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_amt" value="amountCents"                  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="104" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_cur" value="currency"                     style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="130" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_st"  value="status (PENDING|COMPLETED|FAILED)" style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=10;" vertex="1" parent="pay_h"><mxGeometry y="156" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_cat" value="createdAt (ISO string)"       style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="182" width="250" height="26" as="geometry"/></mxCell>
+        <mxCell id="pp_co"  value="completedAt (ISO string)"     style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="pay_h"><mxGeometry y="208" width="250" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ ENTITY: auditLogs ══════════ -->
+        <mxCell id="audit_h" value="auditLogs"
+          style="swimlane;fontStyle=1;align=center;startSize=26;
+                 fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="1140" y="360" width="220" height="175" as="geometry"/>
+        </mxCell>
+        <mxCell id="al_id"   value="🔑 logId (auto)"             style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="audit_h"><mxGeometry y="26"  width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="al_uid"  value="🔗 userId (FK → users)"      style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="audit_h"><mxGeometry y="52"  width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="al_act"  value="action (TOP_UP, …)"          style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="audit_h"><mxGeometry y="78"  width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="al_data" value="data (JSON)"                  style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="audit_h"><mxGeometry y="104" width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="al_ts"   value="timestamp"                    style="text;strokeColor=none;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="audit_h"><mxGeometry y="130" width="220" height="26" as="geometry"/></mxCell>
+
+        <!-- ══════════ RELATIONSHIPS ══════════ -->
+
+        <!-- users (1) ─── passengers (1) on userId -->
+        <mxCell id="rel_u_p" value="1          1"
+          style="endArrow=ERone;startArrow=ERone;fontSize=10;
+                 exitX=1;exitY=0.5;exitDx=0;exitDy=0;
+                 entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="users_h" target="pass_h" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- routes (1) ─── buses (N) on routeId -->
+        <mxCell id="rel_r_b" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=1;exitY=0.5;exitDx=0;exitDy=0;
+                 entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="route_h" target="bus_h" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- passengers (1) ─── tokens (N) on passengerId -->
+        <mxCell id="rel_p_t" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=0;exitY=0.5;exitDx=0;exitDy=0;
+                 entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="pass_h" target="token_h" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="350" y="160"/><mxPoint x="330" y="160"/><mxPoint x="330" y="485"/><mxPoint x="310" y="485"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- tokens (1) ─── trips (1) on tokenId -->
+        <mxCell id="rel_t_tr" value="1          1"
+          style="endArrow=ERone;startArrow=ERone;fontSize=10;
+                 exitX=1;exitY=0.5;exitDx=0;exitDy=0;
+                 entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="token_h" target="trip_h" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- passengers (1) ─── trips (N) on passengerId -->
+        <mxCell id="rel_p_tr" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=0.5;exitY=1;exitDx=0;exitDy=0;
+                 entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="pass_h" target="trip_h" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- buses (1) ─── trips (N) on busId -->
+        <mxCell id="rel_b_tr" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=0;exitY=1;exitDx=0;exitDy=0;
+                 entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="bus_h" target="trip_h" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1020" y="320"/><mxPoint x="560" y="320"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- users (1) ─── pendingPayments (N) on userId -->
+        <mxCell id="rel_u_pp" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=0.5;exitY=1;exitDx=0;exitDy=0;
+                 entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="users_h" target="pay_h" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="170" y="320"/><mxPoint x="945" y="320"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- users (1) ─── auditLogs (N) on userId -->
+        <mxCell id="rel_u_al" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=1;exitY=1;exitDx=0;exitDy=0;
+                 entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="users_h" target="audit_h" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="280" y="310"/><mxPoint x="1250" y="310"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- passengers (1) ─── pendingPayments (N) on passengerId -->
+        <mxCell id="rel_p_pp" value="1          N"
+          style="endArrow=ERmany;startArrow=ERone;fontSize=10;
+                 exitX=1;exitY=1;exitDx=0;exitDy=0;
+                 entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="pass_h" target="pay_h" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="590" y="330"/><mxPoint x="780" y="330"/><mxPoint x="780" y="465"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+</mxfile>
