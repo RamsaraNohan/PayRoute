@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,11 +23,19 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
-        title: const Text('Admin Mission Control', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text('Admin Mission Control',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.transparent),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white54),
@@ -47,14 +56,18 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          _AdminStaffVerifTab(),
-          _AdminFleetTab(),
-          _AdminAssignmentsTab(),
-          _AdminComplaintsTab(),
-        ],
+      body: Container(
+        width: double.infinity,
+        decoration: AppTheme.gradientBackground(),
+        child: TabBarView(
+          controller: _tabController,
+          children: const [
+            _AdminStaffVerifTab(),
+            _AdminFleetTab(),
+            _AdminAssignmentsTab(),
+            _AdminComplaintsTab(),
+          ],
+        ),
       ),
     );
   }
@@ -271,7 +284,7 @@ class _AdminComplaintsTab extends StatelessWidget {
                 children: [
                   Text(data['category'] ?? 'General Complaint', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text(data['description'] ?? '', style: const TextStyle(color: Colors.white70)),
+                  Text(data['content'] ?? data['description'] ?? '', style: const TextStyle(color: Colors.white70)),
                   const Divider(color: Colors.white10, height: 24),
                   Text('Bus: ${data['busId']}', style: const TextStyle(color: Colors.white38, fontSize: 11)),
                 ],

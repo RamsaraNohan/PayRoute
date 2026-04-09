@@ -5,6 +5,10 @@ import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/passenger_provider.dart';
 import '../complaint/complaint_screen.dart';
+import '../help/help_faq_screen.dart';
+import '../booking/my_bookings_screen.dart';
+import '../legal/privacy_policy_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -61,14 +65,17 @@ class ProfileScreen extends ConsumerWidget {
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: AppTheme.purpleLight,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: AppTheme.backgroundDark, width: 2),
+                            child: GestureDetector(
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())),
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.purpleLight,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: AppTheme.backgroundDark, width: 2),
+                                ),
+                                child: const Icon(Icons.edit, color: Colors.white, size: 14),
                               ),
-                              child: const Icon(Icons.edit, color: Colors.white, size: 14),
                             ),
                           ),
                         ],
@@ -125,6 +132,17 @@ class ProfileScreen extends ConsumerWidget {
                 _infoTile(Icons.fingerprint, 'User ID', passenger.userId.substring(0, 12) + '...'),
 
                 const SizedBox(height: 24),
+                _sectionTitle('My Rides'),
+                _actionTile(
+                  context,
+                  Icons.calendar_month_outlined,
+                  'My Bookings',
+                  'View and manage advance seat reservations',
+                  Colors.tealAccent,
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyBookingsScreen())),
+                ),
+
+                const SizedBox(height: 24),
                 _sectionTitle('Support'),
                 _actionTile(
                   context,
@@ -140,11 +158,27 @@ class ProfileScreen extends ConsumerWidget {
                   'Help & FAQ',
                   'Get answers to common questions',
                   Colors.blueAccent,
-                  () {},
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpFaqScreen())),
+                ),
+                _actionTile(
+                  context,
+                  Icons.privacy_tip_outlined,
+                  'Privacy Policy & Terms',
+                  'Read our data and usage policies',
+                  Colors.white54,
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen())),
                 ),
 
                 const SizedBox(height: 24),
                 _sectionTitle('Account'),
+                _actionTile(
+                  context,
+                  Icons.edit_outlined,
+                  'Edit Profile',
+                  'Update your name, address and contacts',
+                  AppTheme.purpleLight,
+                  () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())),
+                ),
                 _actionTile(
                   context,
                   Icons.logout,

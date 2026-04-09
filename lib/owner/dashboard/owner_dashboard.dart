@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,18 +33,62 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
+      extendBody: true,
       body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        backgroundColor: AppTheme.backgroundDark,
-        selectedItemColor: AppTheme.purpleLight,
-        unselectedItemColor: Colors.white38,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.analytics_outlined), label: 'Analytics'),
-          BottomNavigationBarItem(icon: Icon(Icons.directions_bus_filled_outlined), label: 'Fleet'),
-          BottomNavigationBarItem(icon: Icon(Icons.badge_outlined), label: 'Staff'),
-        ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: Container(
+              height: 64,
+              decoration: BoxDecoration(
+                color: const Color(0x33FFFFFF),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: const Color(0x44FFFFFF), width: 0.8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _ownerNavItem(0, Icons.analytics_outlined, Icons.analytics_rounded, 'Analytics'),
+                  _ownerNavItem(1, Icons.directions_bus_outlined, Icons.directions_bus_rounded, 'Fleet'),
+                  _ownerNavItem(2, Icons.badge_outlined, Icons.badge_rounded, 'Staff'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _ownerNavItem(int index, IconData icon, IconData activeIcon, String label) {
+    final selected = _currentIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _currentIndex = index),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: 80,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              selected ? activeIcon : icon,
+              color: selected ? AppTheme.purpleLight : Colors.white54,
+              size: 22,
+            ),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? AppTheme.purpleLight : Colors.white38,
+                fontSize: 10,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -64,74 +109,109 @@ class _OwnerAnalyticsTab extends StatelessWidget {
       decoration: AppTheme.gradientBackground(),
       child: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
+          // Step 1: get owner's buses
           stream: FirebaseFirestore.instance
-              .collection('trips')
+              .collection('buses')
               .where('ownerId', isEqualTo: user?.uid)
-              .where('boardedAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
               .snapshots(),
-          builder: (context, snapshot) {
-            final trips = snapshot.data?.docs ?? [];
-            final totalCents = trips.fold<int>(0, (s, d) => s + ((d.data() as Map)['fareCents'] as int? ?? 0));
+          builder: (context, busSnap) {
+            final busIds = busSnap.data?.docs.map((d) => d.id).toList() ?? [];
 
-            return ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Revenue', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-                    IconButton(onPressed: () => FirebaseAuth.instance.signOut(), icon: const Icon(Icons.logout, color: Colors.white54)),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: AppTheme.glassCard(),
-                  child: Column(
+            if (busIds.isEmpty) {
+              return ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Today\'s Collections', style: TextStyle(color: Colors.white60, fontSize: 14)),
-                      const SizedBox(height: 12),
-                      Text('LKR ${currency.format(totalCents / 100)}',
-                          style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      Text('${trips.length} Completed Trips', style: const TextStyle(color: Colors.greenAccent, fontSize: 13)),
+                      const Text('Revenue', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                      IconButton(onPressed: () => FirebaseAuth.instance.signOut(), icon: const Icon(Icons.logout, color: Colors.white54)),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
+                  const SizedBox(height: 24),
+                  _buildEmptyState('No buses registered yet.', Icons.directions_bus_outlined),
+                ],
+              );
+            }
+
+            return StreamBuilder<QuerySnapshot>(
+              // Step 2: get today's completed trips for those buses (whereIn supports ≤10 values)
+              stream: FirebaseFirestore.instance
+                  .collection('passengerTrips')
+                  .where('busId', whereIn: busIds.take(10).toList())
+                  .where('status', isEqualTo: 'COMPLETED')
+                  .where('boardedAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
+                  .snapshots(),
+              builder: (context, snapshot) {
+                final trips = snapshot.data?.docs ?? [];
+                final totalCents = trips.fold<int>(0, (s, d) => s + ((d.data() as Map)['fareCents'] as int? ?? 0));
+
+                return ListView(
+                  padding: const EdgeInsets.all(20),
                   children: [
-                    Expanded(child: _miniStat('Active Buses', '3', Icons.bolt, Colors.amber)),
-                    const SizedBox(width: 12),
-                    Expanded(child: _miniStat('Efficiency', '94%', Icons.trending_up, Colors.blueAccent)),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                const Text('Recent Fleet Activity', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                if (trips.isEmpty)
-                  _buildEmptyState('No trips recorded today.', Icons.history)
-                else
-                  ...trips.map((doc) {
-                    final d = doc.data() as Map<String, dynamic>;
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Revenue', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                        IconButton(onPressed: () => FirebaseAuth.instance.signOut(), icon: const Icon(Icons.logout, color: Colors.white54)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: const EdgeInsets.all(24),
                       decoration: AppTheme.glassCard(),
-                      child: Row(
+                      child: Column(
                         children: [
-                          const CircleAvatar(backgroundColor: Colors.white10, radius: 18, child: Icon(Icons.commute, color: Colors.white, size: 18)),
-                          const SizedBox(width: 12),
-                          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(d['registrationNumber'] ?? 'Bus', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                            Text('${d['boardingStopName'] ?? 'Start'} → ${d['destinationStopName'] ?? 'End'}', style: const TextStyle(color: Colors.white54, fontSize: 11)),
-                          ])),
-                          Text('+${currency.format((d['fareCents'] ?? 0) / 100)}', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold)),
+                          const Text('Today\'s Collections', style: TextStyle(color: Colors.white60, fontSize: 14)),
+                          const SizedBox(height: 12),
+                          Text('LKR ${currency.format(totalCents / 100)}',
+                              style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 8),
+                          Text('${trips.length} Completed Trips', style: const TextStyle(color: Colors.greenAccent, fontSize: 13)),
                         ],
                       ),
-                    );
-                  }),
-              ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(child: _miniStat('Buses', '${busIds.length}', Icons.directions_bus, Colors.amber)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _miniStat('Today Trips', '${trips.length}', Icons.trending_up, Colors.blueAccent)),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    const Text('Recent Fleet Activity', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 16),
+                    if (trips.isEmpty)
+                      _buildEmptyState('No trips recorded today.', Icons.history)
+                    else
+                      ...trips.map((doc) {
+                        final d = doc.data() as Map<String, dynamic>;
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.all(16),
+                          decoration: AppTheme.glassCard(),
+                          child: Row(
+                            children: [
+                              const CircleAvatar(backgroundColor: Colors.white10, radius: 18, child: Icon(Icons.commute, color: Colors.white, size: 18)),
+                              const SizedBox(width: 12),
+                              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Text('Bus: ${d['busId'] ?? '—'}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                Text(
+                                  d['boardedAt'] != null
+                                      ? DateFormat('hh:mm a').format((d['boardedAt'] as Timestamp).toDate())
+                                      : '—',
+                                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                                ),
+                              ])),
+                              Text('+${currency.format((d['fareCents'] as int? ?? 0) / 100)}', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        );
+                      }),
+                  ],
+                );
+              },
             );
           },
         ),

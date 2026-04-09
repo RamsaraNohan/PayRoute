@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/theme/app_theme.dart';
 
 class TripReceiptScreen extends StatelessWidget {
@@ -9,15 +11,22 @@ class TripReceiptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat('#,##0.00', 'en_US');
-    final fareCents = (tripData['fareCents'] as int?) ?? 4500;
+    final companions = (tripData['companionCount'] as int?) ?? 0;
     final boardingTime = tripData['boardingTime'] != null
         ? DateFormat('MMM dd, yyyy  hh:mm a').format(DateTime.parse(tripData['boardingTime']))
         : '—';
     final dropTime = tripData['dropTime'] != null
         ? DateFormat('hh:mm a').format(DateTime.parse(tripData['dropTime']))
-        : '—';
-    final companions = (tripData['companionCount'] as int?) ?? 0;
-    final totalFare = fareCents * (1 + companions);
+        : (tripData['droppedAt'] != null
+            ? DateFormat('hh:mm a')
+                .format((tripData['droppedAt'] as Timestamp).toDate())
+            : '—');
+    // finalFare already includes all companions (calculated in signalDrop backend)
+    // Use finalFare first, fall back to fareCents for legacy records
+    final totalFare = (tripData['finalFare'] as int?) ?? (tripData['fareCents'] as int?) ?? 4500;
+    final farePerPerson = companions > 0 ? (totalFare ~/ (1 + companions)) : totalFare;
+
+    final busId = tripData['busId'] as String? ?? '—';
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
@@ -26,9 +35,11 @@ class TripReceiptScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          // Share button wired via FutureBuilder once bus name is known
           IconButton(
             icon: const Icon(Icons.share),
-            onPressed: () {}, // Share receipt
+            onPressed: () => _shareReceipt(busId, boardingTime, dropTime, companions,
+                farePerPerson, totalFare, currency),
           ),
         ],
       ),
@@ -55,7 +66,8 @@ class TripReceiptScreen extends StatelessWidget {
                       child: const Icon(Icons.check_circle, color: Colors.green, size: 40),
                     ),
                     const SizedBox(height: 12),
-                    const Text('Trip Completed', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                    const Text('Trip Completed',
+                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
                     Text(boardingTime, style: const TextStyle(color: Colors.white54, fontSize: 12)),
 
@@ -63,9 +75,9 @@ class TripReceiptScreen extends StatelessWidget {
                     const Divider(color: Colors.white12),
                     const SizedBox(height: 16),
 
-                    // Route info
-                    _receiptRow('Bus', tripData['busId'] ?? '—'),
-                    _receiptRow('Destination', tripData['destinationStopId'] ?? '—'),
+                    // Bus — resolve registration number from Firestore
+                    _BusRegistrationRow(busId: busId),
+
                     _receiptRow('Boarded', boardingTime),
                     _receiptRow('Dropped', dropTime),
                     if (companions > 0) _receiptRow('Companions', '+$companions'),
@@ -80,7 +92,8 @@ class TripReceiptScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Fare per person', style: TextStyle(color: Colors.white54)),
-                        Text('LKR ${currency.format(fareCents / 100)}', style: const TextStyle(color: Colors.white)),
+                        Text('LKR ${currency.format(farePerPerson / 100)}',
+                            style: const TextStyle(color: Colors.white)),
                       ],
                     ),
                     if (companions > 0) ...[
@@ -88,8 +101,10 @@ class TripReceiptScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('x${1 + companions} persons', style: const TextStyle(color: Colors.white54)),
-                          Text('LKR ${currency.format(totalFare / 100)}', style: const TextStyle(color: Colors.white)),
+                          Text('x${1 + companions} persons',
+                              style: const TextStyle(color: Colors.white54)),
+                          Text('LKR ${currency.format(totalFare / 100)}',
+                              style: const TextStyle(color: Colors.white)),
                         ],
                       ),
                     ],
@@ -103,10 +118,17 @@ class TripReceiptScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Total Charged', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                          const Text('Total Charged',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16)),
                           Text(
                             'LKR ${currency.format(totalFare / 100)}',
-                            style: const TextStyle(color: AppTheme.purpleLight, fontWeight: FontWeight.bold, fontSize: 20),
+                            style: const TextStyle(
+                                color: AppTheme.purpleLight,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
                           ),
                         ],
                       ),
@@ -134,6 +156,20 @@ class TripReceiptScreen extends StatelessWidget {
     );
   }
 
+  void _shareReceipt(String busId, String boardingTime, String dropTime, int companions,
+      int farePerPerson, int totalFare, NumberFormat currency) {
+    final text = 'PayRoute Trip Receipt\n'
+        '----------------------------\n'
+        'Bus: $busId\n'
+        'Boarded: $boardingTime\n'
+        'Dropped: $dropTime\n'
+        '${companions > 0 ? 'Companions: +$companions\nFare/person: LKR ${currency.format(farePerPerson / 100)}\n' : ''}'
+        'Total Charged: LKR ${currency.format(totalFare / 100)}\n'
+        '----------------------------\n'
+        'Powered by PayRoute';
+    Share.share(text, subject: 'My PayRoute Trip Receipt');
+  }
+
   Widget _receiptRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -147,3 +183,38 @@ class TripReceiptScreen extends StatelessWidget {
     );
   }
 }
+
+/// Resolves the bus registration number from Firestore and displays it in the receipt.
+class _BusRegistrationRow extends StatelessWidget {
+  final String busId;
+  const _BusRegistrationRow({required this.busId});
+
+  @override
+  Widget build(BuildContext context) {
+    if (busId == '—') {
+      return _row('Bus', '—');
+    }
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection('buses').doc(busId).get(),
+      builder: (context, snap) {
+        final reg = (snap.data?.data() as Map<String, dynamic>?)?['registrationNumber'] as String?;
+        return _row('Bus', reg ?? busId);
+      },
+    );
+  }
+
+  Widget _row(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 13)),
+          Text(value,
+              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+}
+

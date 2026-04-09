@@ -33,9 +33,9 @@ class ConductorPassengersScreen extends StatelessWidget {
 
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('trips')
+                .collection('passengerTrips')
                 .where('busId', isEqualTo: assignedBusId)
-                .where('status', isEqualTo: 'ONGOING')
+                .where('status', isEqualTo: 'BOARDED')
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -114,6 +114,8 @@ class ConductorPassengersScreen extends StatelessWidget {
                                         style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
                                       ),
                                     ),
+                                    const SizedBox(width: 8),
+                                    _ManualCheckoutButton(tripId: trips[index].id),
                                   ],
                                 ),
                               );
@@ -127,5 +129,104 @@ class ConductorPassengersScreen extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class _ManualCheckoutButton extends StatefulWidget {
+  final String tripId;
+  const _ManualCheckoutButton({required this.tripId});
+
+  @override
+  State<_ManualCheckoutButton> createState() => _ManualCheckoutButtonState();
+}
+
+class _ManualCheckoutButtonState extends State<_ManualCheckoutButton> {
+  bool _loading = false;
+
+  Future<void> _manualCheckout() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: const Text('Manual Checkout', style: TextStyle(color: Colors.white)),
+        content: const Text(
+          'This will end the passenger\'s trip and deduct the base fare.\n\nUse this only if the passenger cannot scan the exit QR.',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: const Text('Checkout'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    setState(() => _loading = true);
+
+    try {
+      await FirebaseFirestore.instance.runTransaction((t) async {
+        // passengerTrips uses the doc id as the trip record
+        final tripRef = FirebaseFirestore.instance.collection('passengerTrips').doc(widget.tripId);
+        final tripSnap = await t.get(tripRef);
+        if (!tripSnap.exists) throw Exception('Trip not found');
+        final tripData = tripSnap.data()!;
+        if (tripData['status'] != 'BOARDED') throw Exception('Trip already completed');
+
+        // Base fare: 45.00 LKR (4500 cents); companions not stored in passengerTrips
+        const int finalDeduction = 4500;
+
+        final passengerRef = FirebaseFirestore.instance
+            .collection('passengers')
+            .doc(tripData['passengerId'] as String);
+        final passSnap = await t.get(passengerRef);
+        if (!passSnap.exists) throw Exception('Passenger not found');
+        final currentBalance = (passSnap.data()!['walletBalance'] as int?) ?? 0;
+        if (currentBalance < finalDeduction) throw Exception('Insufficient balance');
+
+        t.update(passengerRef, {'walletBalance': currentBalance - finalDeduction});
+        t.update(tripRef, {
+          'exitLocation': tripData['entryLocation'], // same stop = base fare only
+          'droppedAt': FieldValue.serverTimestamp(),
+          'fareCents': finalDeduction,
+          'status': 'COMPLETED',
+          'manualCheckout': true,
+        });
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Passenger checked out successfully.'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _loading
+        ? const SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.orange),
+          )
+        : IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.orange, size: 22),
+            tooltip: 'Manual Checkout',
+            onPressed: _manualCheckout,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          );
   }
 }

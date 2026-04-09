@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { MessageSquare, Trash2, CheckCircle, User, Bus, AlertCircle } from 'lucide-react';
 
@@ -7,16 +7,32 @@ const Complaints = () => {
   const [complaints, setComplaints] = useState([]);
 
   useEffect(() => {
-    return onSnapshot(collection(db, 'complaints'), (snap) => {
-      setComplaints(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
+    // Only show open (unresolved) complaints
+    return onSnapshot(
+      query(collection(db, 'complaints'), where('status', '!=', 'resolved')),
+      (snap) => {
+        setComplaints(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      }
+    );
   }, []);
 
   const resolveComplaint = async (id) => {
     try {
-      await deleteDoc(doc(db, 'complaints', id));
+      await updateDoc(doc(db, 'complaints', id), {
+        status: 'resolved',
+        resolvedAt: new Date(),
+      });
     } catch (e) {
       alert("Error resolving: " + e.message);
+    }
+  };
+
+  const deleteComplaint = async (id) => {
+    if (!window.confirm('Permanently delete this complaint? This cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'complaints', id));
+    } catch (e) {
+      alert("Error deleting: " + e.message);
     }
   };
 
@@ -56,7 +72,7 @@ const Complaints = () => {
                  <CheckCircle size={18} />
                  Mark as Resolved
                </button>
-               <button className="glass glass-hover" style={{ padding: '12px', color: 'var(--danger)' }}>
+               <button className="glass glass-hover" style={{ padding: '12px', color: 'var(--danger)' }} onClick={() => deleteComplaint(item.id)}>
                  <Trash2 size={18} />
                </button>
             </div>

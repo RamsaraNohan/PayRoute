@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 
 class InviteService {
   static final _db = FirebaseFirestore.instance;
+  static const int _inviteExpirationDays = 7;
 
   /// Generates a staff invitation and returns a shareable link.
   /// Format: payroute://invite?id=XYZ
@@ -14,6 +15,7 @@ class InviteService {
     required String businessName,
   }) async {
     final inviteId = IdGenerator.generate('INV');
+    final expiresAt = DateTime.now().add(const Duration(days: _inviteExpirationDays));
     
     await _db.collection('staffInvites').doc(inviteId).set({
       'inviteId': inviteId,
@@ -23,6 +25,7 @@ class InviteService {
       'businessName': businessName,
       'status': 'pending', 
       'createdAt': FieldValue.serverTimestamp(),
+      'expiresAt': Timestamp.fromDate(expiresAt),
     });
 
     final link = 'payroute://invite?id=$inviteId';
@@ -39,7 +42,13 @@ class InviteService {
   static Future<Map<String, dynamic>?> getInvite(String inviteId) async {
     final doc = await _db.collection('staffInvites').doc(inviteId).get();
     if (!doc.exists) return null;
-    return doc.data();
+    final data = doc.data()!;
+    // Reject expired invites
+    final expiresAt = data['expiresAt'];
+    if (expiresAt is Timestamp && expiresAt.toDate().isBefore(DateTime.now())) {
+      return null;
+    }
+    return data;
   }
 
   static Future<void> respondToInvite(String inviteId, String userId, bool accept) async {
@@ -51,6 +60,12 @@ class InviteService {
     final inviteSnap = await _db.collection('staffInvites').doc(inviteId).get();
     final data = inviteSnap.data();
     if (data == null) return;
+
+    // Reject expired invites
+    final expiresAt = data['expiresAt'];
+    if (expiresAt is Timestamp && expiresAt.toDate().isBefore(DateTime.now())) {
+      throw Exception('This invitation has expired.');
+    }
 
     final role = data['role'];
     final ownerId = data['ownerId'];

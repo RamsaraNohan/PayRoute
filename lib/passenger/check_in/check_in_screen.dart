@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cf;
 import '../../core/theme/app_theme.dart';
@@ -17,19 +18,114 @@ class CheckInScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckInScreenState extends ConsumerState<CheckInScreen> {
+  late final MobileScannerController _scannerController;
   bool _isScanning = true;
   bool _processing = false;
   int _companions = 0;
+  bool _nfcMode = false;
+  bool _nfcSupported = false;
+  bool _nfcListening = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scannerController = MobileScannerController();
+    _checkNfc();
+  }
+
+  Future<void> _checkNfc() async {
+    try {
+      final available = await NfcManager.instance.isAvailable();
+      if (mounted) setState(() => _nfcSupported = available);
+    } catch (_) {}
+  }
+
+  void _switchMode(bool toNfc) {
+    if (toNfc && !_nfcSupported) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('NFC not supported on this device'), backgroundColor: Colors.orange),
+      );
+      return;
+    }
+    if (_nfcMode && !toNfc) {
+      NfcManager.instance.stopSession();
+      setState(() {
+        _nfcMode = false;
+        _nfcListening = false;
+      });
+      return;
+    }
+    if (toNfc && !_nfcMode) {
+      setState(() {
+        _nfcMode = true;
+        _nfcListening = true;
+      });
+      _startNfcSession();
+    }
+  }
+
+  Future<void> _startNfcSession() async {
+    try {
+      await NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {
+          try {
+            final ndef = Ndef.from(tag);
+            if (ndef == null) throw Exception('Not an NDEF tag');
+            final message = await ndef.read();
+            for (final record in message.records) {
+              final payload = record.payload;
+              if (payload.isEmpty) continue;
+              // NDEF Text record: byte[0] = status (bit7=UTF-16, bits[5:0]=lang length)
+              final langLen = payload[0] & 0x3F;
+              if (payload.length <= 1 + langLen) continue;
+              final text = String.fromCharCodes(payload.sublist(1 + langLen));
+              if (text.startsWith('trip:')) {
+                await NfcManager.instance.stopSession();
+                if (mounted) {
+                  setState(() => _nfcListening = false);
+                  await _processPayload(text);
+                }
+                return;
+              }
+            }
+            throw Exception('Invalid tag: no trip payload found');
+          } catch (e) {
+            await NfcManager.instance.stopSession(errorMessage: 'Invalid tag');
+            if (mounted) {
+              _showToast('NFC Error: $e', Colors.red);
+              setState(() { _nfcListening = false; _nfcMode = false; });
+            }
+          }
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        _showToast('Cannot start NFC: $e', Colors.red);
+        setState(() { _nfcListening = false; _nfcMode = false; });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _scannerController.dispose();
+    NfcManager.instance.stopSession();
+    super.dispose();
+  }
 
   Future<void> _handleScan(BarcodeCapture capture) async {
     if (!_isScanning || _processing) return;
-    
     final List<Barcode> barcodes = capture.barcodes;
     if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
-      final code = barcodes.first.rawValue!;
-      
-      // Expected Format: trip:TRIP_ID:bus:BUS_ID
+      await _processPayload(barcodes.first.rawValue!);
+    }
+  }
+
+  Future<void> _processPayload(String code) async {
+    // Expected Format: trip:TRIP_ID:bus:BUS_ID
       if (!code.startsWith('trip:')) return;
+      final parts = code.split(':');
+      if (parts.length < 4) return;
 
       setState(() {
         _isScanning = false;
@@ -37,8 +133,8 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
       });
 
       try {
-        final parts = code.split(':');
         final tripId = parts[1];
+        final busId = parts[3];
         
         final passenger = ref.read(passengerStreamProvider).value;
         if (passenger == null) throw Exception('Passenger profile not found.');
@@ -63,6 +159,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
           await TripService.processBoarding(
             tripId: tripId,
             passengerId: passenger.passengerId,
+            busId: busId,
             location: location,
           );
           if (!mounted) return;
@@ -88,7 +185,6 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
           _processing = false;
         });
       }
-    }
   }
 
   void _showToast(String msg, Color color) {
@@ -110,31 +206,86 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
           icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Scan Bus QR', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text(
+          _nfcMode ? 'NFC Check-In' : 'Scan Bus QR',
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        actions: _nfcSupported
+            ? [
+                IconButton(
+                  tooltip: _nfcMode ? 'Switch to QR' : 'Switch to NFC',
+                  icon: Icon(_nfcMode ? Icons.qr_code_scanner : Icons.nfc, color: Colors.white),
+                  onPressed: () => _switchMode(!_nfcMode),
+                ),
+              ]
+            : null,
       ),
       body: Stack(
         children: [
-          // SCANNER LAYER
-          MobileScanner(
-            onDetect: _handleScan,
-          ),
-          
-          // SCANNER OVERLAY
-          Center(
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.purpleLight, width: 2),
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Stack(
+          // SCANNER LAYER (hidden when NFC mode active)
+          if (!_nfcMode)
+            MobileScanner(
+              controller: _scannerController,
+              onDetect: _handleScan,
+            )
+          else
+            Container(decoration: AppTheme.gradientBackground()),
+
+          // NFC LISTENING STATE
+          if (_nfcMode)
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                   _ScannerLineAnimation(),
+                  Container(
+                    padding: const EdgeInsets.all(36),
+                    decoration: BoxDecoration(
+                      color: AppTheme.purpleLight.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: _nfcListening ? AppTheme.purpleLight : Colors.white24,
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.nfc,
+                      size: 72,
+                      color: _nfcListening ? AppTheme.purpleLight : Colors.white38,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    _nfcListening ? 'Hold phone near the bus NFC tag' : 'NFC ready',
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  if (_nfcListening) ...[
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Tap the NFC sticker on the bus seat or door',
+                      style: TextStyle(color: Colors.white54, fontSize: 13),
+                    ),
+                  ],
                 ],
               ),
             ),
-          ),
+
+          if (!_nfcMode)
+            // SCANNER OVERLAY
+            Center(
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppTheme.purpleLight, width: 2),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Stack(
+                  children: [
+                    _ScannerLineAnimation(),
+                  ],
+                ),
+              ),
+            ),
 
           // INSTRUCTIONS LAYER
           Positioned(
@@ -147,17 +298,19 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.info_outline, color: AppTheme.purpleLight),
+                  Icon(_nfcMode ? Icons.nfc : Icons.info_outline, color: AppTheme.purpleLight),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Entry & Exit Scan',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    _nfcMode ? 'NFC Tap Check-In' : 'Entry & Exit Scan',
+                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Scan the unique QR code on the conductor\'s phone when you board and again when you drop.',
+                  Text(
+                    _nfcMode
+                        ? 'Tap the NFC tag on the bus to board. Tap again when you exit.'
+                        : 'Scan the unique QR code on the conductor\'s phone when you board and again when you drop.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                   const SizedBox(height: 16),
                   passengerAsync.when(

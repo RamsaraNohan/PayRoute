@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 
-const String azureBaseUrl = 'https://payroute-functions.azurewebsites.net/api';
+const String azureBaseUrl =
+    'https://payroute-functions-ajcgebh7a2axe3cw.southeastasia-01.azurewebsites.net/api';
 // Set false when Azure deployed
 const bool kUseMockFunctions = false; 
 
@@ -106,6 +107,28 @@ class AzureFunctionsService {
       return response.statusCode == 200;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> createPaymentSession({required int amountCents}) async {
+    try {
+      final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+      if (idToken == null) return null;
+
+      final response = await http.post(
+        Uri.parse('$azureBaseUrl/createPaymentSession'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $idToken',
+        },
+        body: jsonEncode({'amountCents': amountCents}),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 }

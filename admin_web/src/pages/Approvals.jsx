@@ -5,16 +5,28 @@ import { UserCheck, Bus, Check, X, Info } from 'lucide-react';
 
 const Approvals = () => {
   const [activeTab, setActiveTab] = useState('staff');
-  const [staff, setStaff] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [conductors, setConductors] = useState([]);
   const [buses, setBuses] = useState([]);
   const [assignments, setAssignments] = useState([]);
 
+  // Combine drivers and conductors for rendering without race conditions
+  const staff = [...drivers, ...conductors];
+
   useEffect(() => {
-    // Listen to Pending Staff (Drivers/Conductors)
+    // Listen to Pending Drivers
     const driversUnsub = onSnapshot(
       query(collection(db, 'drivers'), where('verificationStatus', '==', 'pending')),
       (snap) => {
-        setStaff(snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'Driver' })));
+        setDrivers(snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'driver', collection: 'drivers' })));
+      }
+    );
+
+    // Listen to Pending Conductors
+    const conductorsUnsub = onSnapshot(
+      query(collection(db, 'conductors'), where('verificationStatus', '==', 'pending')),
+      (snap) => {
+        setConductors(snap.docs.map(d => ({ id: d.id, ...d.data(), role: 'conductor', collection: 'conductors' })));
       }
     );
 
@@ -36,6 +48,7 @@ const Approvals = () => {
 
     return () => {
       driversUnsub();
+      conductorsUnsub();
       busesUnsub();
       assignUnsub();
     };
@@ -118,8 +131,8 @@ const Approvals = () => {
                   <td><Badge label="New App" color="var(--accent)" /></td>
                   <td>{item.createdAt?.toDate().toLocaleDateString() || 'Today'}</td>
                   <td style={{ textAlign: 'right' }}>
-                    <ActionButton icon={Check} color="var(--success)" onClick={() => handleAction('drivers', item.id, true)} />
-                    <ActionButton icon={X} color="var(--danger)" onClick={() => handleAction('drivers', item.id, false)} />
+                    <ActionButton icon={Check} color="var(--success)" onClick={() => handleAction(item.collection, item.id, true)} />
+                    <ActionButton icon={X} color="var(--danger)" onClick={() => handleAction(item.collection, item.id, false)} />
                   </td>
                 </tr>
               ))}

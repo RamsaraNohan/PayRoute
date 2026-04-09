@@ -9,19 +9,58 @@ async function processBoarding(request, context) {
     }
     try {
         const idToken = authHeader.split('Bearer ')[1];
-        await firebaseAdmin_1.auth.verifyIdToken(idToken); // Conductor authorization check
+        const decodedToken = await firebaseAdmin_1.auth.verifyIdToken(idToken);
+        const callerUid = decodedToken.uid;
         const body = await request.json();
-        const { tokenId, conductorId, busId } = body;
+        const { tokenId, conductorId, busId, boardingLocation } = body;
+        // Verify the authenticated user is the conductor making this request
+        if (callerUid !== conductorId) {
+            return { status: 403, jsonBody: { error: 'Forbidden: unauthorized access' } };
+        }
         // Run within a transaction
         const result = await firebaseAdmin_1.db.runTransaction(async (t) => {
             const tokenRef = firebaseAdmin_1.db.collection('tokens').doc(tokenId);
             const tokenSnap = await t.get(tokenRef);
-            if (!tokenSnap.exists) {
+            if (!tokenSnap.exists)
                 throw new Error('Token not found');
-            }
-            const data = tokenSnap.data();
-            if (data.status !== 'PENDING') {
+            const tokenData = tokenSnap.data();
+            if (tokenData.status !== 'PENDING')
                 throw new Error('Token already used or expired');
+            // 1. Minimum Balance Check (100 LKR = 10000 cents)
+            const passengerRef = firebaseAdmin_1.db.collection('passengers').doc(tokenData.passengerId);
+            const passSnap = await t.get(passengerRef);
+            if (!passSnap.exists)
+                throw new Error('Passenger profile missing');
+            const passData = passSnap.data();
+            if (passData.walletBalance < 10000)
+                throw new Error('Insufficient balance. Minimum 100 LKR required for boarding.');
+            // 2. Identification of Boarding Stop (Search Route)
+            const busSnap = await t.get(firebaseAdmin_1.db.collection('buses').doc(busId));
+            if (!busSnap.exists)
+                throw new Error('Bus not found');
+            const busData = busSnap.data();
+            const routeSnap = await t.get(firebaseAdmin_1.db.collection('routes').doc(busData.routeId));
+            if (!routeSnap.exists)
+                throw new Error('Route profile missing');
+            const routeData = routeSnap.data();
+            let boardingStopName = 'Unknown Stop';
+            if (boardingLocation && routeData.stops) {
+                // Find nearest stop within 500m using Haversine distance
+                const stops = routeData.stops;
+                let minDistanceKm = 0.5; // 500m threshold
+                for (const stop of stops) {
+                    const lat1 = boardingLocation.latitude * Math.PI / 180;
+                    const lat2 = stop.location.latitude * Math.PI / 180;
+                    const dLat = (stop.location.latitude - boardingLocation.latitude) * Math.PI / 180;
+                    const dLon = (stop.location.longitude - boardingLocation.longitude) * Math.PI / 180;
+                    const a = Math.sin(dLat / 2) ** 2 +
+                        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+                    const distKm = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    if (distKm < minDistanceKm) {
+                        boardingStopName = stop.stopName;
+                        minDistanceKm = distKm;
+                    }
+                }
             }
             // Mark token as active
             t.update(tokenRef, { status: 'ACTIVE', boardedAt: new Date().toISOString(), busId });
@@ -29,19 +68,22 @@ async function processBoarding(request, context) {
             const tripRef = firebaseAdmin_1.db.collection('trips').doc();
             t.set(tripRef, {
                 id: tripRef.id,
-                passengerId: data.passengerId,
+                passengerId: tokenData.passengerId,
                 tokenId: tokenId,
                 busId: busId,
                 conductorId: conductorId,
                 status: 'ONGOING',
                 boardingTime: new Date().toISOString(),
-                destinationStopId: data.destinationStopId,
-                companionCount: data.companionCount
+                boardingStopName: boardingStopName,
+                boardingLocation: boardingLocation || null,
+                destinationStopId: tokenData.destinationStopId,
+                companionCount: tokenData.companionCount || 1,
+                fareBase: routeData.baseFareCents || 4500
             });
             return {
-                seatNumber: Math.floor(Math.random() * 40) + 1, // Mock seat assignment
-                fareCents: 4500, // Mock fare base
-                boardingStopName: 'Unknown Stop',
+                seatNumber: Math.floor(Math.random() * 40) + 1,
+                fareBaseCents: routeData.baseFareCents || 4500,
+                boardingStopName: boardingStopName,
                 tripId: tripRef.id
             };
         });
