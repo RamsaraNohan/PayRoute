@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/trip_service.dart';
@@ -24,6 +25,67 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
   String? _tripId;
   bool _tripStarted = false;
   bool _isLoading = false;
+  bool _nfcWriting = false;
+  bool _nfcSupported = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkNfc();
+  }
+
+  Future<void> _checkNfc() async {
+    try {
+      final available = await NfcManager.instance.isAvailable();
+      if (mounted) setState(() => _nfcSupported = available);
+    } catch (_) {}
+  }
+
+  /// Writes the trip payload as an NDEF Text record to a physical NFC tag.
+  Future<void> _writeNfcTag(String payload) async {
+    if (!_nfcSupported) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('NFC not supported on this device'), backgroundColor: Colors.orange),
+      );
+      return;
+    }
+
+    setState(() => _nfcWriting = true);
+    final scaffoldMsg = ScaffoldMessenger.of(context);
+
+    try {
+      await NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {
+          try {
+            final ndef = Ndef.from(tag);
+            if (ndef == null || !ndef.isWritable) {
+              await NfcManager.instance.stopSession(errorMessage: 'Tag is not writable');
+              if (mounted) setState(() => _nfcWriting = false);
+              return;
+            }
+            final message = NdefMessage([NdefRecord.createText(payload)]);
+            await ndef.write(message);
+            await NfcManager.instance.stopSession();
+            if (mounted) {
+              setState(() => _nfcWriting = false);
+              scaffoldMsg.showSnackBar(const SnackBar(
+                content: Text('NFC tag written — passengers can now tap to board!'),
+                backgroundColor: Colors.green,
+              ));
+            }
+          } catch (e) {
+            await NfcManager.instance.stopSession(errorMessage: e.toString());
+            if (mounted) setState(() => _nfcWriting = false);
+          }
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() => _nfcWriting = false);
+        scaffoldMsg.showSnackBar(SnackBar(content: Text('NFC error: $e'), backgroundColor: Colors.red));
+      }
+    }
+  }
 
   Future<void> _toggleTrip() async {
     setState(() => _isLoading = true);
@@ -199,8 +261,29 @@ class _ConductorTripScreenState extends State<ConductorTripScreen> {
           'Trip ID: ${_tripId?.substring(_tripId!.length - 8)}',
           style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        const SizedBox(height: 12),
+        // NFC tag writing button
+        if (_nfcSupported)
+          _nfcWriting
+              ? const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)),
+                    SizedBox(width: 12),
+                    Text('Hold near NFC tag…', style: TextStyle(color: Colors.white70)),
+                  ],
+                )
+              : OutlinedButton.icon(
+                  onPressed: () => _writeNfcTag(qrData),
+                  icon: const Icon(Icons.nfc, size: 20),
+                  label: const Text('Write NFC Tag'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppTheme.purpleLight,
+                    side: const BorderSide(color: AppTheme.purpleLight),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
         const SizedBox(height: 24),
-        // Live counters from Firestore
         StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('passengerTrips')
