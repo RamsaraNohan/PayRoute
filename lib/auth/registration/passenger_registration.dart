@@ -71,12 +71,6 @@ class _PassengerRegistrationState extends State<PassengerRegistration> {
   void _nextStep() {
     if (_currentStep == 0) {
       if (_formKey1.currentState!.validate()) {
-        if (_profileImage == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please select a profile photo')),
-          );
-          return;
-        }
         setState(() => _currentStep++);
       }
     }
@@ -90,13 +84,17 @@ class _PassengerRegistrationState extends State<PassengerRegistration> {
     if (user == null) return;
 
     try {
-      // 1. Upload Profile Photo
+      // 1. Upload Profile Photo (optional – continue without photo if storage unavailable)
       String photoUrl = '';
       if (_profileImage != null) {
-        photoUrl = await StorageService.uploadFile(
-          file: _profileImage!,
-          storagePath: 'users/${user.uid}/profile.jpg',
-        );
+        try {
+          photoUrl = await StorageService.uploadFile(
+            file: _profileImage!,
+            storagePath: 'users/${user.uid}/profile.jpg',
+          );
+        } catch (e) {
+          debugPrint('Profile photo upload failed (non-fatal): $e');
+        }
       }
 
       // 2. Generate Passenger ID

@@ -83,9 +83,15 @@ class _ConductorRegistrationState extends State<ConductorRegistration> {
       final conductorId = IdGenerator.generate('CON');
       final deviceInfo = await DeviceInfoUtil.getInfo();
 
-      // 1. Upload photos
-      final profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
-      final selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'conductors/$conductorId/selfie.jpg');
+      // 1. Upload photos (non-fatal if storage unavailable)
+      String profileUrl = '';
+      String selfieUrl = '';
+      try {
+        profileUrl = await StorageService.uploadFile(file: _profileImage!, storagePath: 'users/${user.uid}/profile.jpg');
+      } catch (e) { debugPrint('Conductor profile photo upload failed: $e'); }
+      try {
+        selfieUrl = await StorageService.uploadFile(file: _selfieImage!, storagePath: 'conductors/$conductorId/selfie.jpg');
+      } catch (e) { debugPrint('Conductor selfie upload failed: $e'); }
 
       // 2. Firestore Transaction
       final db = FirebaseFirestore.instance;

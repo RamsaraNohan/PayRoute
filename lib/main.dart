@@ -68,6 +68,19 @@ class _PayRouteAppState extends State<PayRouteApp> {
         final authState = ref.watch(currentUserStreamProvider);
         final isOnboarding = ref.watch(onboardingStateProvider);
 
+        // When the user signs out, imperatively clear the entire navigator stack
+        // so old dashboard pages do not remain on top of PhoneEntryScreen.
+        ref.listen(currentUserStreamProvider, (prev, next) {
+          final prevUser = prev?.valueOrNull;
+          final nextUser = next.valueOrNull;
+          if (prevUser != null && nextUser == null) {
+            payRouteNavigatorKey.currentState?.pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const PhoneEntryScreen()),
+              (route) => false,
+            );
+          }
+        });
+
         return MaterialApp(
           title: 'PayRoute',
           theme: AppTheme.themeData,
