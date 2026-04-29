@@ -4,6 +4,8 @@ import '../services/auth_service.dart';
 import '../../providers/auth_provider.dart';
 import 'role_router.dart';
 
+
+#classes
 class OTPEntryScreen extends ConsumerStatefulWidget {
   final String verificationId;
   final String phoneNumber;
@@ -78,6 +80,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
     return Container(
       width: 45,
       height: 55,
+      
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: AppTheme.glassCard(),
       child: Center(
@@ -85,6 +88,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
           controller: _controllers[index],
           focusNode: _focusNodes[index],
           keyboardType: TextInputType.number,
+          
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
           inputFormatters: [
@@ -96,6 +100,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
             if (value.isNotEmpty && index < 5) {
               _focusNodes[index + 1].requestFocus();
             } else if (value.isNotEmpty && index == 5) {
+              
               _focusNodes[index].unfocus();
               _verifyOTP(); // auto submit
             } else if (value.isEmpty && index > 0) {
@@ -122,6 +127,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
+        
         decoration: AppTheme.gradientBackground(),
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -150,6 +156,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                     onPressed: _isLoading ? null : () async {
                       startTimer();
                       setState(() => _isLoading = true);
+                      
                       final messenger = ScaffoldMessenger.of(context);
                       try {
                         await _authService.verifyPhoneNumber(
@@ -168,6 +175,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                           verificationFailed: (e) {
                             if (mounted) {
                               setState(() => _isLoading = false);
+                              
                               messenger.showSnackBar(
                                 SnackBar(content: Text('Resend failed: ${e.message}')),
                               );
@@ -178,6 +186,7 @@ class _OTPEntryScreenState extends ConsumerState<OTPEntryScreen> {
                         if (mounted) {
                           setState(() => _isLoading = false);
                           messenger.showSnackBar(
+                            
                             SnackBar(content: Text('Resend error: $e')),
                           );
                         }
