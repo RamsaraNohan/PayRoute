@@ -7,6 +7,8 @@ import '../../providers/auth_provider.dart';
 import '../../passenger/legal/privacy_policy_screen.dart';
 import 'otp_entry_screen.dart';
 
+
+#classes 
 class PhoneEntryScreen extends ConsumerStatefulWidget {
   const PhoneEntryScreen({super.key});
 
@@ -99,6 +101,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                 children: [
                   const Text('+94', style: TextStyle(color: Colors.white, fontSize: 18)),
                   const SizedBox(width: 12),
+                  
                   Expanded(
                     child: TextField(
                       controller: _phoneController,
@@ -144,6 +147,7 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
                             TextSpan(
                               text: 'Terms of Service & Privacy Policy',
                               style: const TextStyle(
+                                
                                 color: AppTheme.purpleLight,
                                 decoration: TextDecoration.underline,
                                 fontWeight: FontWeight.w600,
@@ -163,17 +167,21 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            
             _isLoading
                 ? const CircularProgressIndicator(color: Colors.white)
                 : ElevatedButton(
                     onPressed: _getOTP,
+                  
                     style: AppTheme.primaryButton(),
                     child: const Text('Get OTP', style: TextStyle(fontSize: 18)),
                   ),
             const SizedBox(height: 16),
+            
             const Text('OTP will be sent via SMS', style: TextStyle(color: Colors.white54, fontSize: 14)),
           ],
         ),
+        
       ),
     );
   }
