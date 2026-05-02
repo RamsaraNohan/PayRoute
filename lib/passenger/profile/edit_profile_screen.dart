@@ -1,3 +1,4 @@
+#edited
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -322,3 +323,4 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.purpleLight)),
       );
 }
+#editdone
